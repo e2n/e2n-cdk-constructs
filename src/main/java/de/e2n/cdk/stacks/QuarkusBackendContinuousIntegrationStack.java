@@ -118,6 +118,9 @@ public class QuarkusBackendContinuousIntegrationStack extends Stack {
                                                         "docker push $REPOSITORY_URI:$QUARKUS_CONTAINER_IMAGE_ADDITIONAL_TAGS"
                                                 )
                                         )
+                                ),
+                                "cache", SortedMap.of(
+                                        "paths", List.of("/root/.m2/**/*")
                                 )
                         ))
                 )
@@ -130,7 +133,7 @@ public class QuarkusBackendContinuousIntegrationStack extends Stack {
                                 .value(ecrRepo.getRepositoryUri())
                                 .build()
                 ))
-                .cache(Cache.local(LocalCacheMode.DOCKER_LAYER, LocalCacheMode.SOURCE))
+                .cache(Cache.local(LocalCacheMode.DOCKER_LAYER, LocalCacheMode.SOURCE, LocalCacheMode.CUSTOM))
                 .build();
 
         ecrRepo.grantPullPush(buildProject);
