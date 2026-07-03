@@ -150,4 +150,4 @@ Die Bibliothek wird automatisch via GitHub Actions auf [Maven Central](https://c
 
 ## Lizenz
 
-[MIT](LICENSE) © e2n GmbH
+[MIT](LICENSE) © E2N GmbH
