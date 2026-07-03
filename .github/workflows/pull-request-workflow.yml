@@ -1,0 +1,10 @@
+name: PullRequest Workflow
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  maven-ci:
+    name: Run Maven CI
+    uses: ./.github/workflows/maven.yml
