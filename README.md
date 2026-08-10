@@ -84,6 +84,12 @@ Die Bibliothek gliedert sich in drei Pakete:
 |---|---|
 | `Policy` | Hilfskonstrukt zum Erstellen einer IAM Policy |
 
+### Storage
+
+| Construct | Beschreibung |
+|---|---|
+| `S3Bucket` | Konfigurierbarer S3-Bucket (Verschlüsselung, Versionierung, Public Access, Lifecycle-Regeln, CORS, Static Website Hosting, Access Logs) mit sicheren Defaults |
+
 ---
 
 ## Stacks
