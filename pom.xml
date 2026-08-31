@@ -6,7 +6,7 @@
 
     <groupId>de.e2n</groupId>
     <artifactId>cdk-constructs</artifactId>
-    <version>1.1.1</version>
+    <version>1.2.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -46,8 +46,8 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.resources.sourceEncoding>UTF-8</project.resources.sourceEncoding>
-        <cdk.lib.version>2.262.1</cdk.lib.version>
-        <cdk.constructs.version>10.7.1</cdk.constructs.version>
+        <cdk.lib.version>2.266.0</cdk.lib.version>
+        <cdk.constructs.version>10.8.1</cdk.constructs.version>
         <junit.version>5.14.4</junit.version>
         <maven.surefire.plugin.version>3.5.4</maven.surefire.plugin.version>
     </properties>
