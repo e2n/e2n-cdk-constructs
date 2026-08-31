@@ -37,7 +37,8 @@ public class QuarkusBackendContinuousIntegrationStack extends Stack {
                                                     String sourceBranch,
                                                     String applicationArtifactId,
                                                     software.amazon.awscdk.services.codecommit.IRepository gitRepo,
-                                                    IRepository ecrRepository) {
+                                                    IRepository ecrRepository,
+                                                    BuildSpec buildSpec) {
         super(scope, id, props);
 
         this.name = name;
@@ -45,7 +46,7 @@ public class QuarkusBackendContinuousIntegrationStack extends Stack {
         this.applicationArtifactId = applicationArtifactId;
 
         var sourceStage = sourceStage(gitRepo);
-        var buildStage = buildStage(ecrRepository);
+        var buildStage = buildStage(ecrRepository, buildSpec);
         var stages = List.of(sourceStage, buildStage);
 
         this.pipeline = Pipeline.Builder.create(this, "Pipeline")
@@ -69,7 +70,7 @@ public class QuarkusBackendContinuousIntegrationStack extends Stack {
                 .build();
     }
 
-    StageProps buildStage(IRepository ecrRepo) {
+    StageProps buildStage(IRepository ecrRepo, BuildSpec buildSpec) {
         var environment = BuildEnvironment.builder()
                 .computeType(ComputeType.MEDIUM)
                 .buildImage(LinuxArmBuildImage.AMAZON_LINUX_2_STANDARD_3_0)
@@ -78,52 +79,7 @@ public class QuarkusBackendContinuousIntegrationStack extends Stack {
 
         var buildProject = PipelineProject.Builder.create(this, name)
                 .projectName(name + "-Build")
-                // https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html#build-spec-ref-example
-                .buildSpec(BuildSpec.fromObject(
-                        SortedMap.of("version", "0.2",
-                                     "phases", SortedMap.of(
-                                        "install", SortedMap.of(
-                                                "runtime-versions", SortedMap.of(
-                                                        "java", "corretto21"),
-                                                "commands", List.of(
-                                                        "java --version",
-                                                        "mvn -v",
-                                                        "docker -v",
-                                                        // https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
-                                                        "AWS_ACCOUNT_ID=$(echo $CODEBUILD_BUILD_ARN | cut -d':' -f5)",
-                                                        "AWS_ECR_REGISTRY=\"$AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com\"",
-                                                        // ecr login
-                                                        "aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ECR_REGISTRY",
-                                                        "export COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-8)",
-                                                        "export TESTCONTAINERS_CHECKS_DISABLE=true",
-                                                        "export TESTCONTAINERS_REUSE_ENABLE=true",
-                                                        "export TESTCONTAINERS_RYUK_DISABLED=true",
-                                                        // to avoid docker hub rate limiting we always use our own registry
-                                                        // https://www.testcontainers.org/features/image_name_substitution/#automatically-modifying-docker-hub-image-names
-                                                        "export TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX=$AWS_ECR_REGISTRY",
-                                                        "export TESTCONTAINERS_TINYIMAGE_CONTAINER_IMAGE=public.ecr.aws/docker/library/alpine:3.16"
-                                                )
-                                        ),
-                                        "build", SortedMap.of(
-                                                "commands", List.of(
-                                                        "export QUARKUS_CONTAINER_IMAGE_BUILD=TRUE",
-                                                        "export QUARKUS_CONTAINER_IMAGE_REGISTRY=$(echo $REPOSITORY_URI | cut -d'/' -f1)",
-                                                        "export QUARKUS_CONTAINER_IMAGE_NAME=$REPOSITORY_NAME",
-                                                        "export QUARKUS_CONTAINER_IMAGE_TAG=latest",
-                                                        "export QUARKUS_CONTAINER_IMAGE_ADDITIONAL_TAGS=$COMMIT_HASH",
-                                                        "mvn spotless:check -pl :" + applicationArtifactId + " -am -T1C -B -ntp",
-                                                        "mvn install -pl :" + applicationArtifactId + " -am -T1C -B -ntp",
-                                                        "docker images",
-                                                        "docker push $REPOSITORY_URI:$QUARKUS_CONTAINER_IMAGE_TAG",
-                                                        "docker push $REPOSITORY_URI:$QUARKUS_CONTAINER_IMAGE_ADDITIONAL_TAGS"
-                                                )
-                                        )
-                                ),
-                                "cache", SortedMap.of(
-                                        "paths", List.of("/root/.m2/**/*")
-                                )
-                        ))
-                )
+                .buildSpec(buildSpec == null ? defaultBuildSpec() : buildSpec)
                 .environment(environment)
                 .environmentVariables(SortedMap.of(
                         "REPOSITORY_NAME", BuildEnvironmentVariable.builder()
@@ -163,8 +119,40 @@ public class QuarkusBackendContinuousIntegrationStack extends Stack {
                 .build();
     }
 
+    private BuildSpec defaultBuildSpec() {
+        return de.e2n.cdk.model.BuildSpec.builder()
+                .version("0.2")
+                .runtimeVersions(SortedMap.of(
+                        "java", "corretto21"
+                ))
+                .installCommands(List.of(
+                        "java --version",
+                        "mvn -v",
+                        "docker -v",
+                        // https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
+                        "AWS_ACCOUNT_ID=$(echo $CODEBUILD_BUILD_ARN | cut -d':' -f5)",
+                        "AWS_ECR_REGISTRY=\"$AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com\"",
+                        // ecr login
+                        "aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ECR_REGISTRY",
+                        "export COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-8)"
+                ))
+                .buildCommands(List.of(
+                        "export QUARKUS_CONTAINER_IMAGE_BUILD=TRUE",
+                        "export QUARKUS_CONTAINER_IMAGE_REGISTRY=$(echo $REPOSITORY_URI | cut -d'/' -f1)",
+                        "export QUARKUS_CONTAINER_IMAGE_NAME=$REPOSITORY_NAME",
+                        "export QUARKUS_CONTAINER_IMAGE_TAG=latest",
+                        "export QUARKUS_CONTAINER_IMAGE_ADDITIONAL_TAGS=$COMMIT_HASH",
+                        "mvn spotless:check -pl :" + applicationArtifactId + " -am -T1C -B -ntp",
+                        "mvn install -pl :" + applicationArtifactId + " -am -T1C -B -ntp",
+                        "docker images",
+                        "docker push $REPOSITORY_URI:$QUARKUS_CONTAINER_IMAGE_TAG",
+                        "docker push $REPOSITORY_URI:$QUARKUS_CONTAINER_IMAGE_ADDITIONAL_TAGS"
+                ))
+                .cachePaths(List.of("/root/.m2/**/*"))
+                .build();
+    }
+
     public Pipeline getPipeline() {
         return pipeline;
     }
-
 }
