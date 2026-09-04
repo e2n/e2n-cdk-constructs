@@ -49,7 +49,7 @@
         <cdk.lib.version>2.266.0</cdk.lib.version>
         <cdk.constructs.version>10.8.1</cdk.constructs.version>
         <junit.version>5.14.4</junit.version>
-        <maven.surefire.plugin.version>3.5.4</maven.surefire.plugin.version>
+        <maven.surefire.plugin.version>3.6.0</maven.surefire.plugin.version>
     </properties>
 
     <dependencyManagement>
