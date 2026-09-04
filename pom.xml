@@ -46,7 +46,7 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.resources.sourceEncoding>UTF-8</project.resources.sourceEncoding>
-        <cdk.lib.version>2.266.0</cdk.lib.version>
+        <cdk.lib.version>2.267.0</cdk.lib.version>
         <cdk.constructs.version>10.8.1</cdk.constructs.version>
         <junit.version>5.14.4</junit.version>
         <maven.surefire.plugin.version>3.5.4</maven.surefire.plugin.version>
