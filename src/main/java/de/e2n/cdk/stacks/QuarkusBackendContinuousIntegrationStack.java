@@ -55,6 +55,17 @@ public class QuarkusBackendContinuousIntegrationStack extends Stack {
                 .build();
     }
 
+    public QuarkusBackendContinuousIntegrationStack(Construct scope,
+                                                    String id,
+                                                    StackProps props,
+                                                    String name,
+                                                    String sourceBranch,
+                                                    String applicationArtifactId,
+                                                    software.amazon.awscdk.services.codecommit.IRepository gitRepo,
+                                                    IRepository ecrRepository) {
+        this(scope, id, props, name, sourceBranch, applicationArtifactId, gitRepo, ecrRepository, null);
+    }
+
     StageProps sourceStage(software.amazon.awscdk.services.codecommit.IRepository repository) {
         var sourceAction = CodeCommitSourceAction.Builder.create()
                 .actionName("Source")
@@ -121,7 +132,7 @@ public class QuarkusBackendContinuousIntegrationStack extends Stack {
 
     private BuildSpec defaultBuildSpec() {
         return de.e2n.cdk.model.BuildSpec.builder()
-                .version("0.2")
+                .version(de.e2n.cdk.model.BuildSpec.Version.V0_2)
                 .runtimeVersions(SortedMap.of(
                         "java", "corretto21"
                 ))

@@ -23,9 +23,24 @@ public final class BuildSpec {
         return new Builder();
     }
 
+    public enum Version {
+        V0_1("0.1"),
+        V0_2("0.2");
+
+        private final String value;
+
+        Version(String value) {
+            this.value = value;
+        }
+
+        public String value() {
+            return value;
+        }
+    }
+
     public static final class Builder {
 
-        private String version;
+        private Version version = Version.V0_2;
         private Map<String, String> runtimeVersions = SortedMap.of();
         private List<String> installCommands = new ArrayList<>();
         private List<String> buildCommands = new ArrayList<>();
@@ -35,7 +50,7 @@ public final class BuildSpec {
          * @param version Die Version der Buildspec.
          * @return {@link Builder}
          */
-        public Builder version(String version) {
+        public Builder version(Version version) {
             this.version = version;
             return this;
         }
@@ -84,7 +99,7 @@ public final class BuildSpec {
         public software.amazon.awscdk.services.codebuild.BuildSpec build() {
             return software.amazon.awscdk.services.codebuild.BuildSpec.fromObject(
                     SortedMap.of(
-                            "version", version,
+                            "version", version.value(),
                             "phases", SortedMap.of(
                                     "install", SortedMap.of(
                                             "runtime-versions", runtimeVersions,
