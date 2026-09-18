@@ -44,10 +44,12 @@ public class ManagedKnowledgeBase extends Construct {
                             .build()))
                     .build();
 
-            defaultRole.addToPolicy(PolicyStatement.Builder.create()
-                    .actions(List.of("bedrock:InvokeModel"))
-                    .resources(List.of(knowledgeBaseConfig.getEmbeddingModelArn()))
-                    .build());
+            if (knowledgeBaseConfig.getEmbeddingModelArn() != null) {
+                defaultRole.addToPolicy(PolicyStatement.Builder.create()
+                        .actions(List.of("bedrock:InvokeModel"))
+                        .resources(List.of(knowledgeBaseConfig.getEmbeddingModelArn()))
+                        .build());
+            }
             role = defaultRole;
             s3DataSourceConfig.getBucket().grantRead(role);
         } else {
