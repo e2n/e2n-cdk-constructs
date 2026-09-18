@@ -113,6 +113,7 @@ public class KnowledgeBaseConfig {
          * Die ARN des Embedding-Modells, mit dem Bedrock Vektoren für die Managed Knowledge Base erzeugt,
          * z.B. {@code arn:aws:bedrock:<region>::foundation-model/amazon.titan-embed-text-v2:0}.
          * <p>
+         * Default: {@code null} - wird kostenlose gemanagte Embedding Modell von AWS Bedrock eingesetzt.
          * @param embeddingModelArn Die ARN des Embedding-Modells.
          * @return {@link Builder}
          */
@@ -154,10 +155,7 @@ public class KnowledgeBaseConfig {
                 throw new IllegalArgumentException(
                         "name ist erforderlich, da die AWS::Bedrock::KnowledgeBase-Ressource sonst nicht benannt werden kann.");
             }
-            if (embeddingModelArn == null || embeddingModelArn.isBlank()) {
-                throw new IllegalArgumentException(
-                        "embeddingModelArn ist erforderlich, da Bedrock ohne Embedding-Modell keine Vektoren für die Managed Knowledge Base erzeugen kann.");
-            }
+
             return new KnowledgeBaseConfig(
                     name,
                     description,

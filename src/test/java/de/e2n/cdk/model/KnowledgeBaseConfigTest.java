@@ -13,11 +13,11 @@ public class KnowledgeBaseConfigTest {
     void defaultsCheck() {
         KnowledgeBaseConfig config = KnowledgeBaseConfig.Builder.create()
                 .name("my-knowledgebase")
-                .embeddingModelArn("arn:aws:bedrock:eu-central-1::foundation-model/amazon.titan-embed-text-v2:0")
                 .build();
 
         assertNull(config.getDescription());
         assertNull(config.getRole());
+        assertNull(config.getEmbeddingModelArn());
         assertNull(config.getEmbeddingModelConfiguration());
         assertNull(config.getServerSideEncryptionConfiguration());
     }
@@ -57,14 +57,4 @@ public class KnowledgeBaseConfigTest {
         assertEquals(serverSideEncryptionConfiguration, config.getServerSideEncryptionConfiguration());
     }
 
-    @Test
-    void embeddingArnIsEmpty() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            KnowledgeBaseConfig.Builder.create()
-                    .name("my-knowledgebase")
-                    .description("Managed Knowledge Base")
-                    .embeddingModelArn("")
-                    .build();
-        });
-    }
 }

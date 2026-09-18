@@ -55,6 +55,7 @@ public class ManagedKnowledgeBase extends Construct {
         }
 
         var managedKnowledgeBaseConfig = CfnKnowledgeBase.ManagedKnowledgeBaseConfigurationProperty.builder()
+                .embeddingModelType(knowledgeBaseConfig.getEmbeddingModelArn() == null ? "MANAGED" : "CUSTOM")
                 .embeddingModelArn(knowledgeBaseConfig.getEmbeddingModelArn())
                 .embeddingModelConfiguration(knowledgeBaseConfig.getEmbeddingModelConfiguration())
                 .serverSideEncryptionConfiguration(knowledgeBaseConfig.getServerSideEncryptionConfiguration())
