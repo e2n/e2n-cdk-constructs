@@ -54,8 +54,13 @@ public class KnowledgeBaseTest {
         template.hasResourceProperties("AWS::Bedrock::DataSource", Match.objectLike(Map.of(
                 "Name", "TestDataSource",
                 "DataSourceConfiguration", Match.objectLike(Map.of(
-                        "Type", "S3", "S3Configuration", Match.objectLike(Map.of(
-                                "BucketArn", Match.anyValue())))))));
+                        "Type", "MANAGED_KNOWLEDGE_BASE_CONNECTOR", "ManagedKnowledgeBaseConnectorConfiguration", Match.objectLike(Map.of(
+                                "ConnectorParameters", Match.objectLike(Map.of(
+                                        "type", "S3",
+                                        "version", "1",
+                                        "connectionConfiguration", Match.objectLike(Map.of(
+                                                "bucketName", Match.anyValue()
+                                )))))))))));
 
         template.hasResourceProperties("AWS::IAM::Role", Match.objectLike(Map.of(
                 "AssumeRolePolicyDocument", Map.of(

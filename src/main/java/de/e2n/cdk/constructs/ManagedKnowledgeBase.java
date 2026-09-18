@@ -8,6 +8,7 @@ import software.amazon.awscdk.services.bedrock.CfnKnowledgeBase;
 import software.amazon.awscdk.services.iam.*;
 import software.constructs.Construct;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,14 +76,28 @@ public class ManagedKnowledgeBase extends Construct {
                 .knowledgeBaseConfiguration(knowledgeBaseConfiguration)
                 .build();
 
-        var s3Config = CfnDataSource.S3DataSourceConfigurationProperty.builder()
-                .bucketArn(s3DataSourceConfig.getBucket().getBucketArn())
-                .inclusionPrefixes(s3DataSourceConfig.getInclusionPrefixes())
+        Map<String, Object> connectionConfiguration = Map.of(
+                "bucketName", s3DataSourceConfig.getBucket().getBucketName(),
+                "bucketOwnerAccountId", Stack.of(this).getAccount()
+        );
+
+        Map<String, Object> connectorParameters = new HashMap<>();
+        connectorParameters.put("type", "S3");
+        connectorParameters.put("version", "1");
+        connectorParameters.put("connectionConfiguration", connectionConfiguration);
+        if (s3DataSourceConfig.getInclusionPrefixes() != null) {
+            connectorParameters.put("filterConfiguration", Map.of(
+                    "inclusionPrefixes", s3DataSourceConfig.getInclusionPrefixes()
+            ));
+        }
+
+        var managedConnectorConfig = CfnDataSource.ManagedKnowledgeBaseConnectorConfigurationProperty.builder()
+                .connectorParameters(connectorParameters)
                 .build();
 
         var dataSourceConfig = CfnDataSource.DataSourceConfigurationProperty.builder()
-                .type("S3")
-                .s3Configuration(s3Config)
+                .type("MANAGED_KNOWLEDGE_BASE_CONNECTOR")
+                .managedKnowledgeBaseConnectorConfiguration(managedConnectorConfig)
                 .build();
 
         dataSource = CfnDataSource.Builder.create(this, "KnowledgeBaseDataSource")
