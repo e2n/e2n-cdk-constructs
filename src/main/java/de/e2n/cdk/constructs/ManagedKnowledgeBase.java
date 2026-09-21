@@ -1,11 +1,13 @@
 package de.e2n.cdk.constructs;
 
 import de.e2n.cdk.model.KnowledgeBaseConfig;
+import de.e2n.cdk.model.S3BucketConfig;
 import de.e2n.cdk.model.S3DataSourceConfig;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.services.bedrock.CfnDataSource;
 import software.amazon.awscdk.services.bedrock.CfnKnowledgeBase;
 import software.amazon.awscdk.services.iam.*;
+import software.amazon.awscdk.services.s3.IBucket;
 import software.constructs.Construct;
 
 import java.util.HashMap;
@@ -13,18 +15,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Diese Klasse erzeugt mittels AWS CDK eine konfigurierbare AWS Bedrock Managed Knowledge Base
- * mit einem S3-Bucket als Data Source.
+ * This class creates a configurable AWS Bedrock Managed Knowledge Base with an S3 bucket
+ * as data source using AWS CDK.
  * <p>
- * Die Konfiguration der Knowledge Base erfolgt über {@link KnowledgeBaseConfig}, die Konfiguration
- * der Data Source über {@link S3DataSourceConfig}. Sofern in {@link KnowledgeBaseConfig} keine
- * eigene {@link IRole} angegeben wird, erzeugt das Konstrukt automatisch eine Standard-Rolle mit den
- * benötigten Berechtigungen zum Aufruf des konfigurierten Embedding-Modells.
+ * The Knowledge Base configuration is done via {@link KnowledgeBaseConfig}, and the data source
+ * configuration via {@link S3DataSourceConfig}. If no custom bucket is specified in {@link S3DataSourceConfig},
+ * the construct automatically creates a default S3 bucket.
+ * If no custom {@link IRole} is specified in
+ * {@link KnowledgeBaseConfig}, the construct automatically creates a default role with the
+ * permissions required to invoke the configured embedding model.
  * <p>
- * Das CDK-Konstrukt besteht aus den folgenden AWS Ressourcen:
- * - eine AWS Bedrock Knowledge Base ({@link CfnKnowledgeBase})
- * - eine AWS Bedrock Data Source ({@link CfnDataSource}) mit S3 als Datenquelle
- * - optional eine IAM-Rolle ({@link Role}), falls keine eigene Rolle übergeben wurde
+ * The CDK construct consists of the following AWS resources:
+ * - an AWS Bedrock Knowledge Base ({@link CfnKnowledgeBase})
+ * - an AWS Bedrock Data Source ({@link CfnDataSource}) using S3 as data source
+ * - optionally an IAM role ({@link Role}), if no custom role was provided
  */
 public class ManagedKnowledgeBase extends Construct {
 
@@ -36,6 +40,13 @@ public class ManagedKnowledgeBase extends Construct {
                                 final KnowledgeBaseConfig knowledgeBaseConfig,
                                 final S3DataSourceConfig s3DataSourceConfig) {
         super(scope, id);
+
+        IBucket bucket;
+        if (s3DataSourceConfig.getBucket() == null) {
+            bucket = new S3Bucket(this, "KnowledgeBaseS3Bucket", S3BucketConfig.Builder.create().build()).getBucket();
+        } else {
+            bucket = s3DataSourceConfig.getBucket();
+        }
 
         IRole role;
         if (knowledgeBaseConfig.getRole() == null) {
@@ -52,7 +63,7 @@ public class ManagedKnowledgeBase extends Construct {
                         .build());
             }
             role = defaultRole;
-            s3DataSourceConfig.getBucket().grantRead(role);
+            bucket.grantRead(role);
         } else {
             role = knowledgeBaseConfig.getRole();
         }
@@ -77,7 +88,7 @@ public class ManagedKnowledgeBase extends Construct {
                 .build();
 
         Map<String, Object> connectionConfiguration = Map.of(
-                "bucketName", s3DataSourceConfig.getBucket().getBucketName(),
+                "bucketName", bucket.getBucketName(),
                 "bucketOwnerAccountId", Stack.of(this).getAccount()
         );
 

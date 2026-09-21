@@ -5,10 +5,10 @@ import software.amazon.awscdk.services.bedrock.CfnKnowledgeBase.ManagedKnowledge
 import software.amazon.awscdk.services.iam.IRole;
 
 /**
- * Die Konfiguration einer Managed Bedrock Knowledge Base. Wird per {@link Builder} initialisiert.
+ * The configuration of a Managed Bedrock Knowledge Base. Initialized via {@link Builder}.
  * <p>
- * Bildet die AWS-Ressource {@code AWS::Bedrock::KnowledgeBase} für den Storage-Typ {@code MANAGED} ab —
- * AWS verwaltet dabei den Vector-Store selbst, es muss keine eigene Storage-Konfiguration (OpenSearch, usw.) angegeben werden.
+ * Represents the AWS resource {@code AWS::Bedrock::KnowledgeBase} for storage type {@code MANAGED} —
+ * AWS manages the vector store itself, so no custom storage configuration (OpenSearch, etc.) needs to be provided.
  */
 public class KnowledgeBaseConfig {
 
@@ -58,7 +58,7 @@ public class KnowledgeBaseConfig {
     }
 
     /**
-     * {@link KnowledgeBaseConfig} Builder.
+     * Builder for {@link KnowledgeBaseConfig}.
      */
     public static class Builder {
 
@@ -73,14 +73,14 @@ public class KnowledgeBaseConfig {
         }
 
         /**
-         * @return {@link Builder} ein neuer Builder.
+         * @return {@link Builder} a new builder.
          */
         public static Builder create() {
             return new Builder();
         }
 
         /**
-         * @param name Der Name der Knowledge Base.
+         * @param name The name of the knowledge base.
          * @return {@link Builder}
          */
         public Builder name(String name) {
@@ -89,7 +89,7 @@ public class KnowledgeBaseConfig {
         }
 
         /**
-         * @param description Eine Beschreibung der Knowledge Base. Default: {@code null}
+         * @param description A description of the knowledge base. Default: {@code null}
          * @return {@link Builder}
          */
         public Builder description(String description) {
@@ -98,10 +98,10 @@ public class KnowledgeBaseConfig {
         }
 
         /**
-         * Die IAM-Role, die Bedrock beim Zugriff auf das Embedding-Modell und die Datenquellen annimmt.
+         * The IAM role that Bedrock assumes when accessing the embedding model and the data sources.
          * <p>
-         * Wenn nicht gesetzt, erstellt der zugehörige Construct eine Default-Role. Default: {@code null}
-         * @param role Die Service-Role für die Knowledge Base.
+         * If not set, the associated construct creates a default role. Default: {@code null}
+         * @param role The service role for the knowledge base.
          * @return {@link Builder}
          */
         public Builder role(IRole role) {
@@ -110,11 +110,11 @@ public class KnowledgeBaseConfig {
         }
 
         /**
-         * Die ARN des Embedding-Modells, mit dem Bedrock Vektoren für die Managed Knowledge Base erzeugt,
-         * z.B. {@code arn:aws:bedrock:<region>::foundation-model/amazon.titan-embed-text-v2:0}.
+         * The ARN of the embedding model that Bedrock uses to generate vectors for the managed knowledge base,
+         * e.g. {@code arn:aws:bedrock:<region>::foundation-model/amazon.titan-embed-text-v2:0}.
          * <p>
-         * Default: {@code null} - wird kostenlose gemanagte Embedding Modell von AWS Bedrock eingesetzt.
-         * @param embeddingModelArn Die ARN des Embedding-Modells.
+         * Default: {@code null} - AWS Bedrock's free managed embedding model is used.
+         * @param embeddingModelArn The ARN of the embedding model.
          * @return {@link Builder}
          */
         public Builder embeddingModelArn(String embeddingModelArn) {
@@ -123,11 +123,11 @@ public class KnowledgeBaseConfig {
         }
 
         /**
-         * Einstellungen für das Embedding-Modell, z.B. Vektordimension oder Datentyp der Embeddings
-         * (bei Modellen, die das unterstützen, z.B. Titan Text Embeddings v2).
+         * Settings for the embedding model, e.g. vector dimension or data type of the embeddings
+         * (for models that support it, e.g. Titan Text Embeddings v2).
          * <p>
-         * Default: {@code null} (Modell-Standard)
-         * @param embeddingModelConfiguration Die Embedding-Modell-Konfiguration.
+         * Default: {@code null} (model default)
+         * @param embeddingModelConfiguration The embedding model configuration.
          * @return {@link Builder}
          */
         public Builder embeddingModelConfiguration(EmbeddingModelConfigurationProperty embeddingModelConfiguration) {
@@ -136,9 +136,9 @@ public class KnowledgeBaseConfig {
         }
 
         /**
-         * Verschlüsselung des von Bedrock verwalteten Vector-Stores mit einem eigenen KMS-Key statt der
-         * AWS-verwalteten Standardverschlüsselung. Default: {@code null} (AWS-verwaltete Verschlüsselung)
-         * @param serverSideEncryptionConfiguration Die Verschlüsselungskonfiguration des Vector-Stores.
+         * Encryption of the Bedrock-managed vector store with a custom KMS key instead of the
+         * AWS-managed default encryption. Default: {@code null} (AWS-managed encryption)
+         * @param serverSideEncryptionConfiguration The encryption configuration of the vector store.
          * @return {@link Builder}
          */
         public Builder serverSideEncryptionConfiguration(ManagedKnowledgeBaseServerSideEncryptionConfigurationProperty serverSideEncryptionConfiguration) {
@@ -148,12 +148,12 @@ public class KnowledgeBaseConfig {
 
         /**
          * @return {@link KnowledgeBaseConfig}
-         * @throws IllegalArgumentException wenn {@link #name(String)} oder {@link #embeddingModelArn(String)} fehlt.
+         * @throws IllegalArgumentException if {@link #name(String)} or {@link #embeddingModelArn(String)} is missing.
          */
         public KnowledgeBaseConfig build() {
             if (name == null || name.isBlank()) {
                 throw new IllegalArgumentException(
-                        "name ist erforderlich, da die AWS::Bedrock::KnowledgeBase-Ressource sonst nicht benannt werden kann.");
+                        "name is required, otherwise the AWS::Bedrock::KnowledgeBase resource cannot be named.");
             }
 
             return new KnowledgeBaseConfig(

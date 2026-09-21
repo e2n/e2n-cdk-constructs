@@ -74,10 +74,12 @@ public class S3DataSourceConfigTest {
     }
 
     @Test
-    void bucketFehltWirftException() {
-        assertThrows(IllegalArgumentException.class, () -> S3DataSourceConfig.Builder.create()
+    void bucketOptionalWennNichtGesetzt() {
+        S3DataSourceConfig config = S3DataSourceConfig.Builder.create()
                 .name("my-datasource")
-                .build());
+                .build();
+
+        assertNull(config.getBucket());
     }
 
     @Test

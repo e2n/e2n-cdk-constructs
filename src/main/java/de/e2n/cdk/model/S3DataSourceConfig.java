@@ -7,10 +7,10 @@ import software.amazon.awscdk.services.s3.IBucket;
 import java.util.List;
 
 /**
- * Die Konfiguration einer S3-Datenquelle für eine Bedrock Knowledge Base. Wird per {@link Builder} initialisiert.
+ * The configuration of an S3 data source for a Bedrock Knowledge Base. Initialized via {@link Builder}.
  * <p>
- * Bildet die AWS-Ressource {@code AWS::Bedrock::DataSource} für den Datenquellentyp {@code S3} ab. Eine
- * Knowledge Base benötigt mindestens eine Datenquelle, um Dokumente einzulesen und zu indizieren.
+ * Represents the AWS resource {@code AWS::Bedrock::DataSource} for data source type {@code S3}. A
+ * knowledge base needs at least one data source to ingest and index documents.
  */
 public class S3DataSourceConfig {
 
@@ -60,7 +60,7 @@ public class S3DataSourceConfig {
     }
 
     /**
-     * {@link S3DataSourceConfig} Builder.
+     * Builder for {@link S3DataSourceConfig}.
      */
     public static class Builder {
 
@@ -75,14 +75,14 @@ public class S3DataSourceConfig {
         }
 
         /**
-         * @return {@link Builder} ein neuer Builder.
+         * @return {@link Builder} a new builder.
          */
         public static Builder create() {
             return new Builder();
         }
 
         /**
-         * @param name Der Name der Datenquelle. Wird als Name der {@code AWS::Bedrock::DataSource}-Ressource verwendet.
+         * @param name The name of the data source. Used as the name of the {@code AWS::Bedrock::DataSource} resource.
          * @return {@link Builder}
          */
         public Builder name(String name) {
@@ -91,8 +91,9 @@ public class S3DataSourceConfig {
         }
 
         /**
-         * @param bucket Der S3-Bucket, aus dem die Knowledge Base ihre Dokumente einliest.
+         * @param bucket The S3 bucket from which the knowledge base ingests its documents.
          * @return {@link Builder}
+         * Default: {@code null} The default S3 bucket would be created.
          */
         public Builder bucket(IBucket bucket) {
             this.bucket = bucket;
@@ -100,11 +101,11 @@ public class S3DataSourceConfig {
         }
 
         /**
-         * Beschränkt das Einlesen auf Objekte unterhalb der angegebenen S3-Präfixe.
+         * Restricts ingestion to objects below the specified S3 prefixes.
          * <p>
-         * CloudFormation erlaubt hier aktuell maximal einen Eintrag. Default: {@code null} (gesamter Bucket
-         * wird eingelesen)
-         * @param inclusionPrefixes Die S3-Präfixe, auf die das Einlesen beschränkt werden soll.
+         * CloudFormation currently allows a maximum of one entry here. Default: {@code null} (entire bucket
+         * is ingested)
+         * @param inclusionPrefixes The S3 prefixes to which ingestion should be restricted.
          * @return {@link Builder}
          */
         public Builder inclusionPrefixes(List<String> inclusionPrefixes) {
@@ -113,7 +114,7 @@ public class S3DataSourceConfig {
         }
 
         /**
-         * @param description Eine Beschreibung der Datenquelle. Default: {@code null}
+         * @param description A description of the data source. Default: {@code null}
          * @return {@link Builder}
          */
         public Builder description(String description) {
@@ -122,9 +123,9 @@ public class S3DataSourceConfig {
         }
 
         /**
-         * Verschlüsselung der Datenquellen-Metadaten mit einem eigenen KMS-Key statt der AWS-verwalteten
-         * Standardverschlüsselung. Default: {@code null} (AWS-verwaltete Verschlüsselung)
-         * @param serverSideEncryptionConfiguration Die Verschlüsselungskonfiguration der Datenquelle.
+         * Encryption of the data source metadata with a custom KMS key instead of the AWS-managed
+         * default encryption. Default: {@code null} (AWS-managed encryption)
+         * @param serverSideEncryptionConfiguration The encryption configuration of the data source.
          * @return {@link Builder}
          */
         public Builder serverSideEncryptionConfiguration(ServerSideEncryptionConfigurationProperty serverSideEncryptionConfiguration) {
@@ -133,11 +134,11 @@ public class S3DataSourceConfig {
         }
 
         /**
-         * Steuert, wie eingelesene Dokumente vor dem Erzeugen der Embeddings aufbereitet werden: Chunking-
-         * Strategie, Parsing, Kontext-Anreicherung und optionale eigene Transformation per Lambda.
+         * Controls how ingested documents are processed before generating embeddings: chunking
+         * strategy, parsing, context enrichment, and optional custom transformation via Lambda.
          * <p>
-         * Default: {@code null} (Bedrock-Standard-Chunking)
-         * @param vectorIngestionConfiguration Die Ingestion-Konfiguration der Datenquelle.
+         * Default: {@code null} (Bedrock default chunking)
+         * @param vectorIngestionConfiguration The ingestion configuration of the data source.
          * @return {@link Builder}
          */
         public Builder vectorIngestionConfiguration(VectorIngestionConfigurationProperty vectorIngestionConfiguration) {
@@ -147,21 +148,17 @@ public class S3DataSourceConfig {
 
         /**
          * @return {@link S3DataSourceConfig}
-         * @throws IllegalArgumentException wenn {@link #name(String)} oder {@link #bucket(IBucket)} fehlt, oder
-         *                                   {@link #inclusionPrefixes(List)} mehr als ein Element enthält.
+         * @throws IllegalArgumentException if {@link #name(String)} is missing, or
+         *                                   {@link #inclusionPrefixes(List)} contains more than one element.
          */
         public S3DataSourceConfig build() {
             if (name == null || name.isBlank()) {
                 throw new IllegalArgumentException(
-                        "name ist erforderlich, da die AWS::Bedrock::DataSource-Ressource sonst nicht benannt werden kann.");
-            }
-            if (bucket == null) {
-                throw new IllegalArgumentException(
-                        "bucket ist erforderlich, da die Datenquelle ohne S3-Bucket keine Dokumente einlesen kann.");
+                        "name is required, otherwise the AWS::Bedrock::DataSource resource cannot be named.");
             }
             if (inclusionPrefixes != null && inclusionPrefixes.size() > 1) {
                 throw new IllegalArgumentException(
-                        "inclusionPrefixes darf laut CloudFormation-Schema von AWS::Bedrock::DataSource maximal einen Eintrag enthalten.");
+                        "inclusionPrefixes must not contain more than one entry according to the CloudFormation schema of AWS::Bedrock::DataSource.");
             }
 
             return new S3DataSourceConfig(
