@@ -11,8 +11,8 @@ import software.amazon.awscdk.services.events.Schedule;
 import software.amazon.awscdk.services.iam.PolicyDocument;
 
 /**
- * Die Konfiguration eines AWs-Batch-Jobs auf Fargate-Container Basis.
- * Wird per {@link BatchJobConfig.Builder} initialisiert.
+ * Configuration for an AWS Batch job running on Fargate.
+ * Initialized using {@link BatchJobConfig.Builder}.
  */
 public class BatchJobConfig {
 
@@ -94,16 +94,16 @@ public class BatchJobConfig {
 
         /**
          *
-         * @return {@link BatchJobConfig.Builder} ein neuer Builder.
+         * @return {@link BatchJobConfig.Builder} a new builder.
          */
         public static Builder create() {
             return new Builder();
         }
 
         /**
-         * Die Liste der einzelnen Argumente des auszuführenden Befehls im Job-Container,
-         * z.B. List.of("java", "-jar", "~/gastroapp-sk-office-export-1.0.jar")
-         * @param jobCommand Die Liste der Argumente des Jobbefehls.
+         * The list of arguments for the command to run in the job container,
+         * e.g. {@code List.of("java", "-jar", "~/gastroapp-sk-office-export-1.0.jar")}.
+         * @param jobCommand The list of arguments for the job command.
          * @return {@link BatchJobConfig.Builder}
          */
         public BatchJobConfig.Builder setJobCommand(List<String> jobCommand) {
@@ -112,8 +112,8 @@ public class BatchJobConfig {
         }
 
         /**
-         * Der Pfad zum Dockerfile des ContainerImages, welches als Job ausgeführt werden soll.
-         * @param dockerfilePath Der Pfad zum Dockerfile.
+         * The path to the Dockerfile for the container image to run as a job.
+         * @param dockerfilePath The path to the Dockerfile.
          * @return {@link BatchJobConfig.Builder}
          */
         public BatchJobConfig.Builder setDockerfilePath(String dockerfilePath) {
@@ -122,8 +122,7 @@ public class BatchJobConfig {
         }
 
         /**
-         * @param policy Eine IAM-Policy, die als inline-Policy in der IAM-Role des Jobs gesetzt
-         *               wird.
+         * @param policy An IAM policy to set as an inline policy on the job's IAM role.
          * @return {@link BatchJobConfig.Builder}
          */
         public BatchJobConfig.Builder inlinePolicy(Policy policy) {
@@ -132,8 +131,7 @@ public class BatchJobConfig {
         }
 
         /**
-         * @param schedule Eine {@link Schedule} (Cronjob), welche den Job zum definierten Zeitpunkt
-         *                 triggert.
+         * @param schedule A {@link Schedule} (cron job) that triggers the job at the specified time.
          * @return {@link BatchJobConfig.Builder}
          */
         public BatchJobConfig.Builder schedule(Schedule schedule) {
@@ -142,8 +140,8 @@ public class BatchJobConfig {
         }
 
         /**
-         * Der Timeout des Jobs
-         * @param timeout Timeout als Duration.
+         * The job timeout.
+         * @param timeout The timeout as a duration.
          * @return {@link BatchJobConfig.Builder}
          */
         public BatchJobConfig.Builder setTimeout(Duration timeout) {

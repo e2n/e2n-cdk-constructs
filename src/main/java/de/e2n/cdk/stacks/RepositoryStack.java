@@ -36,32 +36,30 @@ public class RepositoryStack extends Stack {
     }
 
     /**
-     * Erzeugt eine Liste von LifecycleRules, die Images mit den übergebenen Tags niemals löscht und alle anderen Images löscht,
-     * mit Ausnahme der maxAnzahlZuBehaltenderImages neuesten Images.
-     * @param zuBehaltendeImageTags Tags der Images, die niemals gelöscht werden sollen
-     * @param maxAnzahlZuBehaltenderImages Anzahl der (neuesten X) Images, die behalten werden sollen
-     * @return Liste von LifecycleRules
+     * Creates a list of lifecycle rules that never delete images with the specified tags and delete all other images,
+     * except for the {@code maxImagesToKeep} newest images.
+     * @param imageTagsToKeep Tags of images that should never be deleted.
+     * @param maxImagesToKeep Number of newest images to keep.
+     * @return A list of lifecycle rules.
      */
-    public static List<LifecycleRule> buildLifecycleRules(
-            List<String> zuBehaltendeImageTags, int maxAnzahlZuBehaltenderImages) {
+    public static List<LifecycleRule> buildLifecycleRules(List<String> imageTagsToKeep, int maxImagesToKeep) {
         List<LifecycleRule> rules = new ArrayList<>();
         int i = 1;
-        for (String imageTag : zuBehaltendeImageTags) {
+        for (String imageTag : imageTagsToKeep) {
             rules.add(LifecycleRule.builder()
                     .rulePriority(i++)
                     .tagStatus(TagStatus.TAGGED)
                     .tagPrefixList(List.of(imageTag))
                     .maxImageCount(1)
-                    .description("Image mit dem Tag " + imageTag + " behalten")
+                    .description("Keep image with tag " + imageTag)
                     .build());
         }
 
         rules.add(LifecycleRule.builder()
                 .rulePriority(i)
                 .tagStatus(TagStatus.ANY)
-                .maxImageCount(maxAnzahlZuBehaltenderImages)
-                .description(
-                        "Insgesamt " + maxAnzahlZuBehaltenderImages + " Images behalten, alle älteren Images löschen")
+                .maxImageCount(maxImagesToKeep)
+                .description("Keep " + maxImagesToKeep + " images total and delete all older images")
                 .build());
 
         return rules;

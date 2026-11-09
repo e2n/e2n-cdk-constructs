@@ -5,13 +5,13 @@ import software.amazon.awscdk.services.s3.Bucket;
 import software.constructs.Construct;
 
 /**
- * Diese Klasse erzeugt mittels AWS CDK einen konfigurierbaren AWS S3-Bucket.
+ * This class uses AWS CDK to create a configurable AWS S3 bucket.
  * <p>
- * Die Konfiguration erfolgt über {@link S3BucketConfig}, welche standardmäßig einen möglichst sicher
- * konfigurierten Bucket erzeugt (Verschlüsselung, Blockierung öffentlichen Zugriffs, verpflichtendes SSL/TLS).
+ * Configuration is provided through {@link S3BucketConfig}, which creates a bucket with secure defaults
+ * (encryption, blocked public access, and enforced SSL/TLS).
  * <p>
- * Das CDK-Konstrukt besteht aus den folgenden AWS Ressourcen:
- * - ein AWS S3-Bucket
+ * The CDK construct consists of the following AWS resource:
+ * - An AWS S3 bucket
  */
 public class S3Bucket extends Construct {
 

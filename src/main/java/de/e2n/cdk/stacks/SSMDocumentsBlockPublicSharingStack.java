@@ -7,33 +7,33 @@ import software.amazon.awscdk.customresources.*;
 import software.constructs.Construct;
 
 /**
- * CDK Stack zum Blockieren der öffentlichen Freigabe von AWS Systems Manager (SSM) Dokumenten.
+ * CDK stack to block public sharing of AWS Systems Manager (SSM) documents.
  * <p>
- * Diese Maßnahme stellt eine empfohlene Sicherheits-Best-Practice dar und sollte in allen AWS Accounts aktiviert werden.
- * Weitere Informationen:
+ * This recommended security best practice should be enabled in all AWS accounts.
+ * For more information:
  * <ul>
  *   <li><a href="https://docs.aws.amazon.com/securityhub/latest/userguide/ssm-controls.html#ssm-7">AWS Security Hub SSM-7</a></li>
  *   <li><a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/documents-ssm-sharing.html#block-public-access">Block public access to SSM documents</a></li>
  * </ul>
  * <p>
- * Da CloudFormation diese Einstellung nicht direkt unterstützt, wird ein Custom Resource verwendet, um die Service-Einstellung
- * "/ssm/documents/console/public-sharing-permission" auf "Disable" zu setzen. Dies verhindert die öffentliche Freigabe von SSM Dokumenten.
- * Siehe auch: <a href="https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_UpdateServiceSetting.html">API_UpdateServiceSetting</a>
+ * Since CloudFormation does not directly support this setting, a custom resource is used to set the service setting
+ * "/ssm/documents/console/public-sharing-permission" to "Disable". This prevents public sharing of SSM documents.
+ * See also: <a href="https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_UpdateServiceSetting.html">API_UpdateServiceSetting</a>
  */
 public class SSMDocumentsBlockPublicSharingStack extends Stack {
 
     /**
-     * Erstellt eine neue Instanz des Stacks, der die öffentliche Freigabe von SSM Dokumenten blockiert.
+     * Creates a new stack instance that blocks public sharing of SSM documents.
      *
-     * @param scope  Der übergeordnete Construct-Scope
-     * @param id     Die eindeutige Stack-ID
-     * @param props  Stack-Eigenschaften
-     * @param region Die AWS-Region, in der die Einstellung vorgenommen werden soll
+     * @param scope  The parent construct scope.
+     * @param id     The unique stack ID.
+     * @param props  The stack properties.
+     * @param region The AWS Region in which to apply the setting.
      */
     public SSMDocumentsBlockPublicSharingStack(Construct scope, String id, StackProps props, String region) {
         super(scope, id, props);
 
-        // Custom Resource zum Setzen der Service-Einstellung für das Blockieren der öffentlichen Freigabe
+        // Custom resource to set the service setting that blocks public sharing
         var call = AwsSdkCall.builder()
                 .service("SSM")
                 .region(region)
@@ -52,7 +52,7 @@ public class SSMDocumentsBlockPublicSharingStack extends Stack {
                 .onCreate(call)
                 .onUpdate(call)
                 .policy(policy)
-                // Siehe: https://github.com/aws/aws-cdk/issues/30067
+                // See https://github.com/aws/aws-cdk/issues/30067
                 .installLatestAwsSdk(false)
                 .build();
     }

@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Die Konfiguration einer AWS Code Build BuildSpec: {@link software.amazon.awscdk.services.codebuild.BuildSpec}
- * Konfigurierbar über den {@link Builder}.
+ * Configuration for an AWS CodeBuild buildspec: {@link software.amazon.awscdk.services.codebuild.BuildSpec}.
+ * Configurable using the {@link Builder}.
  * https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html
  *
  * @see <a href="https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html">A Build specification reference for CodeBuild</a>
@@ -45,7 +45,7 @@ public final class BuildSpec {
         private List<String> cachePaths = new ArrayList<>();
 
         /**
-         * @param version Die Version der Buildspec.
+         * @param version The buildspec version.
          * @return {@link Builder}
          */
         public Builder version(Version version) {
@@ -54,7 +54,7 @@ public final class BuildSpec {
         }
 
         /**
-         * @param runtimeVersions Die Runtime-Versionen für die Install-Phase.
+         * @param runtimeVersions The runtime versions for the install phase.
          * @return {@link Builder}
          */
         public Builder runtimeVersions(Map<String, String> runtimeVersions) {
@@ -63,7 +63,7 @@ public final class BuildSpec {
         }
 
         /**
-         * @param installCommands Die Commands, die während der Install-Phase ausgeführt werden.
+         * @param installCommands The commands to run during the install phase.
          * @return {@link Builder}
          */
         public Builder installCommands(List<String> installCommands) {
@@ -72,7 +72,7 @@ public final class BuildSpec {
         }
 
         /**
-         * @param buildCommands Die Commands, die während der Build-Phase ausgeführt werden.
+         * @param buildCommands The commands to run during the build phase.
          * @return {@link Builder}
          */
         public Builder buildCommands(List<String> buildCommands) {
@@ -81,7 +81,7 @@ public final class BuildSpec {
         }
 
         /**
-         * @param cachePaths Die Pfade, die von CodeBuild gecached werden.
+         * @param cachePaths The paths to cache in CodeBuild.
          * @return {@link Builder}
          */
         public Builder cachePaths(List<String> cachePaths) {
@@ -90,7 +90,7 @@ public final class BuildSpec {
         }
 
         /**
-         * Erstellt die AWS CodeBuild {@link software.amazon.awscdk.services.codebuild.BuildSpec}.
+         * Creates the AWS CodeBuild {@link software.amazon.awscdk.services.codebuild.BuildSpec}.
          *
          * @return {@link software.amazon.awscdk.services.codebuild.BuildSpec}
          */

@@ -14,7 +14,7 @@ public class GithubActionRoleStack extends Stack {
 
     // The format of githubRepositoryCondition defines for which GitHub Organization, Repository and Branch the role is
     // valid.
-    // see https://aws.amazon.com/de/blogs/security/use-iam-roles-to-connect-github-actions-to-actions-in-aws/
+    // See https://aws.amazon.com/blogs/security/use-iam-roles-to-connect-github-actions-to-actions-in-aws/
     public GithubActionRoleStack(Construct scope, String id, StackProps props, String githubRepositoryCondition) {
         super(scope, id, props);
 

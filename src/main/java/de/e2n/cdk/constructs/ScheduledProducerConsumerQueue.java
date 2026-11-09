@@ -7,17 +7,17 @@ import software.amazon.awscdk.services.events.Schedule;
 import software.constructs.Construct;
 
 /**
- * Diese Klasse konstruiert mittels AWS CDK eine Schedule getriggerte Producer-Lambda, SQS-Queue
- * und Consumer-Lambda.
- * Die sogenannte Producer-Lambda ist in der Lage, Nachrichten in die SQS-Queue zu legen/versenden.
- * Die ebenfalls erzeugte Consumer-Lambda wird von der Queue getriggert und liest die Nachrichten.
+ * This class uses AWS CDK to create a scheduled producer Lambda, an SQS queue,
+ * and a consumer Lambda.
+ * The producer Lambda can send messages to the SQS queue.
+ * The consumer Lambda is triggered by the queue and processes the messages.
  *
  * Schedule --> Producer --> Queue --> Consumer
  *
- * Das CDK-Konstrukt besteht aus den folgenden AWS Ressourcen:
- * - 2x AWS Lambda Functions inklusive IAM Role, Version & Alias (Producer + Consumer)
- * - eine EventBridge Schedule-Rule
- * - eine SQS Queue + Deadletter-Queue
+ * The CDK construct consists of the following AWS resources:
+ * - Two AWS Lambda functions with IAM roles, versions, and aliases (producer and consumer)
+ * - An EventBridge schedule rule
+ * - An SQS queue and dead-letter queue
  */
 public class ScheduledProducerConsumerQueue extends Construct {
 

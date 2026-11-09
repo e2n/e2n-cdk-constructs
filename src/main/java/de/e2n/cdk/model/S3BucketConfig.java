@@ -10,10 +10,10 @@ import software.amazon.awscdk.services.s3.IBucket;
 import software.amazon.awscdk.services.s3.LifecycleRule;
 
 /**
- * Die Konfiguration eines AWS S3-Buckets. Wird per {@link Builder} initialisiert.
+ * Configuration for an AWS S3 bucket. Initialized using the {@link Builder}.
  * <p>
- * Standardmäßig wird ein möglichst sicher konfigurierter Bucket erzeugt: SSE-S3-Verschlüsselung,
- * Blockierung jeglichen öffentlichen Zugriffs, verpflichtendes SSL/TLS und {@link RemovalPolicy#RETAIN}.
+ * By default, the bucket is configured securely with SSE-S3 encryption, all public access blocked,
+ * SSL/TLS enforced, and {@link RemovalPolicy#RETAIN}.
  */
 public class S3BucketConfig {
 
@@ -158,15 +158,14 @@ public class S3BucketConfig {
         private Builder() {}
 
         /**
-         * @return {@link Builder} ein neuer Builder.
+         * @return {@link Builder} a new builder.
          */
         public static Builder create() {
             return new Builder();
         }
 
         /**
-         * @param bucketName Der Name des Buckets. Wenn nicht gesetzt, generiert CloudFormation einen
-         *                    eindeutigen Namen. Default: {@code null}
+         * @param bucketName The bucket name. If not set, CloudFormation generates a unique name. Default: {@code null}
          * @return {@link Builder}
          */
         public Builder bucketName(String bucketName) {
@@ -175,7 +174,7 @@ public class S3BucketConfig {
         }
 
         /**
-         * @param versioned Aktiviert Versionierung für alle Objekte im Bucket. Default: {@code false}
+         * @param versioned Enables versioning for all objects in the bucket. Default: {@code false}
          * @return {@link Builder}
          */
         public Builder versioned(boolean versioned) {
@@ -184,11 +183,11 @@ public class S3BucketConfig {
         }
 
         /**
-         * Die Art der Verschlüsselung der im Bucket abgelegten Objekte.
+         * The encryption type for objects stored in the bucket.
          * <p>
-         * Um einen eigenen KMS-Key zu verwenden, muss zusätzlich {@link #encryptionKey(IKey)} gesetzt werden.
+         * To use a custom KMS key, {@link #encryptionKey(IKey)} must also be set.
          * Default: {@link BucketEncryption#S3_MANAGED}
-         * @param encryption Die Art der Verschlüsselung.
+         * @param encryption The encryption type.
          * @return {@link Builder}
          */
         public Builder encryption(BucketEncryption encryption) {
@@ -197,8 +196,8 @@ public class S3BucketConfig {
         }
 
         /**
-         * @param encryptionKey Der KMS-Key, mit dem die Objekte im Bucket verschlüsselt werden sollen.
-         *                      Erfordert {@link #encryption(BucketEncryption)} = {@link BucketEncryption#KMS}.
+         * @param encryptionKey The KMS key to use for encrypting objects in the bucket.
+         *                      Requires {@link #encryption(BucketEncryption)} = {@link BucketEncryption#KMS}.
          *                      Default: {@code null}
          * @return {@link Builder}
          */
@@ -208,8 +207,8 @@ public class S3BucketConfig {
         }
 
         /**
-         * @param blockPublicAccess Konfiguration, welche Arten von öffentlichem Zugriff auf den Bucket blockiert
-         *                          werden sollen. Default: {@link BlockPublicAccess#BLOCK_ALL}
+         * @param blockPublicAccess Configuration for the types of public access to block for the bucket.
+         *                          Default: {@link BlockPublicAccess#BLOCK_ALL}
          * @return {@link Builder}
          */
         public Builder blockPublicAccess(BlockPublicAccess blockPublicAccess) {
@@ -218,9 +217,9 @@ public class S3BucketConfig {
         }
 
         /**
-         * @param publicReadAccess Gewährt jedem (AWS:*) öffentlichen Lesezugriff auf die Objekte im Bucket.
-         *                         Erfordert eine entsprechend permissive {@link #blockPublicAccess(BlockPublicAccess)}
-         *                         Konfiguration. Default: {@code false}
+         * @param publicReadAccess Grants public read access to the bucket objects (AWS:*).
+         *                         Requires a sufficiently permissive {@link #blockPublicAccess(BlockPublicAccess)}
+         *                         configuration. Default: {@code false}
          * @return {@link Builder}
          */
         public Builder publicReadAccess(boolean publicReadAccess) {
@@ -229,7 +228,7 @@ public class S3BucketConfig {
         }
 
         /**
-         * @param removalPolicy Die Policy, die beim Löschen des zugehörigen Stacks angewendet wird.
+         * @param removalPolicy The policy to apply when the associated stack is deleted.
          *                       Default: {@link RemovalPolicy#RETAIN}
          * @return {@link Builder}
          */
@@ -239,8 +238,8 @@ public class S3BucketConfig {
         }
 
         /**
-         * @param autoDeleteObjects Löscht beim Löschen des Buckets automatisch alle enthaltenen Objekte.
-         *                          Erfordert {@link #removalPolicy(RemovalPolicy)} = {@link RemovalPolicy#DESTROY}.
+         * @param autoDeleteObjects Automatically deletes all objects when the bucket is deleted.
+         *                          Requires {@link #removalPolicy(RemovalPolicy)} = {@link RemovalPolicy#DESTROY}.
          *                          Default: {@code false}
          * @return {@link Builder}
          */
@@ -250,8 +249,7 @@ public class S3BucketConfig {
         }
 
         /**
-         * @param enforceSSL Erzwingt per Bucket-Policy, dass Requests auf den Bucket ausschließlich über
-         *                   SSL/TLS erfolgen dürfen. Default: {@code true}
+         * @param enforceSSL Adds a bucket policy requiring all requests to use SSL/TLS. Default: {@code true}
          * @return {@link Builder}
          */
         public Builder enforceSSL(boolean enforceSSL) {
@@ -260,9 +258,8 @@ public class S3BucketConfig {
         }
 
         /**
-         * @param lifecycleRules Regeln für den Lebenszyklus der Objekte im Bucket, z.B. für automatische
-         *                       Übergänge in andere Storage-Klassen oder das Löschen alter Objekte.
-         *                       Default: leere Liste
+         * @param lifecycleRules Rules for object lifecycles in the bucket, e.g. automatic transitions to other
+         *                       storage classes or deletion of old objects. Default: empty list
          * @return {@link Builder}
          */
         public Builder lifecycleRules(List<LifecycleRule> lifecycleRules) {
@@ -271,7 +268,7 @@ public class S3BucketConfig {
         }
 
         /**
-         * @param corsRules Cross-Origin Resource Sharing (CORS) Regeln für den Bucket. Default: leere Liste
+         * @param corsRules Cross-Origin Resource Sharing (CORS) rules for the bucket. Default: empty list
          * @return {@link Builder}
          */
         public Builder corsRules(List<CorsRule> corsRules) {
@@ -280,9 +277,9 @@ public class S3BucketConfig {
         }
 
         /**
-         * Aktiviert Static Website Hosting für den Bucket. Muss zusammen mit
-         * {@link #websiteErrorDocument(String)} gesetzt werden.
-         * @param websiteIndexDocument Der Name des Index-Dokuments (z.B. {@code index.html}).
+         * Enables static website hosting for the bucket. Must be set together with
+         * {@link #websiteErrorDocument(String)}.
+         * @param websiteIndexDocument The name of the index document (e.g. {@code index.html}).
          * @return {@link Builder}
          */
         public Builder websiteIndexDocument(String websiteIndexDocument) {
@@ -291,8 +288,7 @@ public class S3BucketConfig {
         }
 
         /**
-         * @param websiteErrorDocument Der Name des Error-Dokuments (z.B. {@code error.html}) für das
-         *                              Static Website Hosting.
+         * @param websiteErrorDocument The name of the error document (e.g. {@code error.html}) for static website hosting.
          * @return {@link Builder}
          */
         public Builder websiteErrorDocument(String websiteErrorDocument) {
@@ -301,8 +297,8 @@ public class S3BucketConfig {
         }
 
         /**
-         * @param serverAccessLogsBucket Der Bucket, in den Server-Access-Logs für diesen Bucket geschrieben
-         *                                werden sollen. Default: {@code null} (keine Access-Logs)
+         * @param serverAccessLogsBucket The bucket where server access logs for this bucket are written.
+         *                                Default: {@code null} (no access logs)
          * @return {@link Builder}
          */
         public Builder serverAccessLogsBucket(IBucket serverAccessLogsBucket) {
@@ -311,8 +307,8 @@ public class S3BucketConfig {
         }
 
         /**
-         * @param serverAccessLogsPrefix Das Prefix, mit dem die Server-Access-Logs im
-         *                                {@link #serverAccessLogsBucket(IBucket)} abgelegt werden.
+         * @param serverAccessLogsPrefix The prefix used to store server access logs in the
+         *                                {@link #serverAccessLogsBucket(IBucket)}.
          * @return {@link Builder}
          */
         public Builder serverAccessLogsPrefix(String serverAccessLogsPrefix) {
@@ -321,8 +317,8 @@ public class S3BucketConfig {
         }
 
         /**
-         * @param eventBridgeEnabled Leitet alle Events des Buckets (z.B. Objekt erstellt/gelöscht) an
-         *                           EventBridge weiter. Default: {@code false}
+         * @param eventBridgeEnabled Sends all bucket events (e.g. object created/deleted) to EventBridge.
+         *                           Default: {@code false}
          * @return {@link Builder}
          */
         public Builder eventBridgeEnabled(boolean eventBridgeEnabled) {
@@ -332,14 +328,13 @@ public class S3BucketConfig {
 
         /**
          * @return {@link S3BucketConfig}
-         * @throws IllegalArgumentException wenn {@link #autoDeleteObjects(boolean)} aktiviert ist, ohne dass
-         *                                   {@link #removalPolicy(RemovalPolicy)} auf {@link RemovalPolicy#DESTROY}
-         *                                   gesetzt wurde.
+         * @throws IllegalArgumentException if {@link #autoDeleteObjects(boolean)} is enabled without setting
+         *                                  {@link #removalPolicy(RemovalPolicy)} to {@link RemovalPolicy#DESTROY}.
          */
         public S3BucketConfig build() {
             if (autoDeleteObjects && removalPolicy != RemovalPolicy.DESTROY) {
                 throw new IllegalArgumentException(
-                        "autoDeleteObjects erfordert removalPolicy=DESTROY, da sonst die Objekte beim Löschen des Buckets nicht automatisch entfernt werden können.");
+                        "autoDeleteObjects requires removalPolicy=DESTROY; otherwise, objects cannot be automatically removed when the bucket is deleted.");
             }
 
             return new S3BucketConfig(

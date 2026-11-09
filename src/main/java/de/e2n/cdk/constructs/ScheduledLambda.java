@@ -9,11 +9,11 @@ import software.amazon.awscdk.services.events.targets.LambdaFunction;
 import software.constructs.Construct;
 
 /**
- * Diese Klasse erzeugt mittels AWS CDK eine Schedule getriggerte Lambda.
+ * This class uses AWS CDK to create a Lambda triggered by one or more schedules.
  *
- * Das CDK-Konstrukt besteht aus den folgenden AWS Ressourcen:
- * - eine AWS Lambda Function inklusive IAM Role, Version & Alias
- * - eine EventBridge Schedule-Rule
+ * The CDK construct consists of the following AWS resources:
+ * - An AWS Lambda function with an IAM role, version, and alias
+ * - An EventBridge schedule rule
  */
 public class ScheduledLambda extends Construct {
 

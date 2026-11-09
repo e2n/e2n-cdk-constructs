@@ -6,23 +6,22 @@ import software.amazon.awscdk.services.apigateway.IDomainName;
 import software.constructs.Construct;
 
 /**
- * Ermöglicht das Referenzieren einer existierenden APIGateway Domain Name Ressource
- * mittels AWS CDK.
+ * Enables referencing an existing API Gateway domain name resource using AWS CDK.
  */
 public class ExistingDomainName extends Construct {
 
     private final IDomainName iDomainName;
 
     /**
-     * Erzeugt mittels AWS CDK ein neues Construct, welches einen bestehenden
-     * APIGateway Domain Name darstellt und referenziert.
-     * @param scope Parent von diesem Construct, normalerweise eine `App` oder `Stage`,
-     *              (immer vom Typ `Construct`)
-     * @param id Die construct Id von diesem Construct.
-     * @param domainName Der Domain Name (z.B. `myapi.de`), der in APIGateway erzeugt werden soll
-     * @param aliasHostedZoneId Die Hosted zone ID der Domain Name Ressource
-     * @param aliasTarget Der API Gateway Domain Name
-     *                    (z.B. `abc1234.execute-api.eu-central-1.amazonaws.com`)
+     * Creates a new construct using AWS CDK that represents and references an existing
+     * API Gateway domain name.
+     * @param scope The parent of this construct, usually an {@code App} or {@code Stage}
+     *              (always of type {@code Construct}).
+     * @param id The construct ID.
+     * @param domainName The domain name (e.g. {@code myapi.de}) to reference in API Gateway.
+     * @param aliasHostedZoneId The hosted zone ID of the domain name resource.
+     * @param aliasTarget The API Gateway domain name
+     *                    (e.g. {@code abc1234.execute-api.eu-central-1.amazonaws.com}).
      */
     public ExistingDomainName(
             final Construct scope, final String id, String domainName, String aliasHostedZoneId, String aliasTarget) {

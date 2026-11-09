@@ -17,8 +17,7 @@ import software.amazon.awscdk.services.iam.ServicePrincipal;
 import software.constructs.Construct;
 
 /**
- * Diese Klasse erzeugt mittels AWS CDK ein per Schedule(s) getriggerten AWS Batch Job auf
- * Fargate-Container Basis.
+ * This class uses AWS CDK to create an AWS Batch job on Fargate, triggered by one or more schedules.
  */
 public class BatchJob extends Construct {
 

@@ -3,8 +3,7 @@ package de.e2n.cdk.constructs;
 import software.amazon.awscdk.services.iam.PolicyDocument;
 
 /**
- * Eine IAM-Policy besteht aus dem Namen der Policy und einem Dokument, welches die Statements der
- * Policy beinhaltet.
+ * An IAM policy consists of a name and a document containing the policy statements.
  */
 public class Policy {
 
@@ -12,8 +11,8 @@ public class Policy {
     private final PolicyDocument document;
 
     /**
-     * @param name Der Name der Policy
-     * @param document Das {@link PolicyDocument} der Policy
+     * @param name The policy name.
+     * @param document The {@link PolicyDocument} for the policy.
      */
     public Policy(String name, PolicyDocument document) {
         this.name = name;
@@ -22,14 +21,14 @@ public class Policy {
 
     /**
      *
-     * @return Der Name der Policy.
+     * @return The policy name.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @return Das {@link PolicyDocument} der Policy.
+     * @return The {@link PolicyDocument} for the policy.
      */
     public PolicyDocument getDocument() {
         return document;
