@@ -46,7 +46,7 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.resources.sourceEncoding>UTF-8</project.resources.sourceEncoding>
-        <cdk.lib.version>2.267.0</cdk.lib.version>
+        <cdk.lib.version>2.275.0</cdk.lib.version>
         <cdk.constructs.version>10.8.1</cdk.constructs.version>
         <junit.version>6.1.3</junit.version>
         <maven.surefire.plugin.version>3.6.0</maven.surefire.plugin.version>
@@ -64,6 +64,11 @@
                 <artifactId>constructs</artifactId>
                 <version>${cdk.constructs.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>26.1.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -75,6 +80,10 @@
         <dependency>
             <groupId>software.constructs</groupId>
             <artifactId>constructs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -140,7 +149,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
-                    <autoPublish>true</autoPublish>
+                    <autoPublish>false</autoPublish>
                     <waitUntil>published</waitUntil>
                 </configuration>
             </plugin>
