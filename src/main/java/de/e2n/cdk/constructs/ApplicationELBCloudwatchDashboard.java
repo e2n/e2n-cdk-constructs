@@ -1,12 +1,11 @@
 package de.e2n.cdk.constructs;
 
+import java.util.List;
+import java.util.Map;
 import software.amazon.awscdk.Duration;
 import software.amazon.awscdk.services.cloudwatch.*;
 import software.amazon.awscdk.services.elasticloadbalancingv2.ApplicationLoadBalancer;
 import software.constructs.Construct;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Construct for creating an Application-Elastic-Load-Balancer-Dashboard in CloudWatch.
@@ -32,7 +31,8 @@ public class ApplicationELBCloudwatchDashboard extends Construct {
      * @param dashboardName name of the dashboard to be created
      * @param loadBalancer  {@link ApplicationLoadBalancer} for which the dashboard is created
      */
-    public ApplicationELBCloudwatchDashboard(final Construct scope, final String id, String dashboardName, ApplicationLoadBalancer loadBalancer) {
+    public ApplicationELBCloudwatchDashboard(
+            final Construct scope, final String id, String dashboardName, ApplicationLoadBalancer loadBalancer) {
         super(scope, id);
 
         this.idLoadBalancer = loadBalancer.getLoadBalancerFullName();
@@ -56,9 +56,11 @@ public class ApplicationELBCloudwatchDashboard extends Construct {
                 .width(24)
                 .height(3)
                 .markdown("Dashboard for monitoring standard metrics of landing zone via the `Load Balancer`\n"
-                        + "- [Application Load Balancer](https://eu-central-1.console.aws.amazon.com/ec2/home?region=eu-central-1#LoadBalancer:loadBalancerArn=" + arnLoadBalancer + ";tab=listeners)\n"
+                        + "- [Application Load Balancer](https://eu-central-1.console.aws.amazon.com/ec2/home?region=eu-central-1#LoadBalancer:loadBalancerArn="
+                        + arnLoadBalancer + ";tab=listeners)\n"
                         + "- [AWS ELB Metrics Documentation](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-cloudwatch-metrics.html)\n"
-                        + "```\nThis text was created in an " + this.getClass().getSimpleName() + "construct from the CDK\n```")
+                        + "```\nThis text was created in an " + this.getClass().getSimpleName()
+                        + "construct from the CDK\n```")
                 .build();
     }
 
@@ -71,8 +73,7 @@ public class ApplicationELBCloudwatchDashboard extends Construct {
                 .dimensionsMap(Map.of("LoadBalancer", idLoadBalancer))
                 .build();
 
-        SingleValueWidget newConnectionsWidget = SingleValueWidget.Builder
-                .create()
+        SingleValueWidget newConnectionsWidget = SingleValueWidget.Builder.create()
                 .title("New Connections (Sum)")
                 .width(12)
                 .height(6)
@@ -88,8 +89,7 @@ public class ApplicationELBCloudwatchDashboard extends Construct {
                 .dimensionsMap(Map.of("LoadBalancer", idLoadBalancer))
                 .build();
 
-        SingleValueWidget activeConnectionsWidget = SingleValueWidget.Builder
-                .create()
+        SingleValueWidget activeConnectionsWidget = SingleValueWidget.Builder.create()
                 .title("Active Connections (Sum)")
                 .width(12)
                 .height(6)
@@ -108,8 +108,7 @@ public class ApplicationELBCloudwatchDashboard extends Construct {
                 .dimensionsMap(Map.of("LoadBalancer", idLoadBalancer))
                 .build();
 
-        return SingleValueWidget.Builder
-                .create()
+        return SingleValueWidget.Builder.create()
                 .title("Request Count (Sum)")
                 .width(24)
                 .height(6)
@@ -152,8 +151,7 @@ public class ApplicationELBCloudwatchDashboard extends Construct {
                 .label("5xx")
                 .build();
 
-        return GraphWidget.Builder
-                .create()
+        return GraphWidget.Builder.create()
                 .title("Response Codes (Sum)")
                 .width(24)
                 .liveData(true)
@@ -169,8 +167,7 @@ public class ApplicationELBCloudwatchDashboard extends Construct {
                 .dimensionsMap(Map.of("LoadBalancer", idLoadBalancer))
                 .build();
 
-        return GraphWidget.Builder
-                .create()
+        return GraphWidget.Builder.create()
                 .title("Response Time (Median)")
                 .width(24)
                 .liveData(true)
@@ -181,5 +178,4 @@ public class ApplicationELBCloudwatchDashboard extends Construct {
     public Dashboard getDashboard() {
         return dashboard;
     }
-
 }

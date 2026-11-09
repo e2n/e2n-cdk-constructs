@@ -11,18 +11,11 @@ public class EcsStack extends Stack {
 
     private final Cluster cluster;
 
-    public EcsStack(Construct scope,
-                    String id,
-                    StackProps props,
-                    Vpc vpc) {
+    public EcsStack(Construct scope, String id, StackProps props, Vpc vpc) {
         this(scope, id, props, vpc, ContainerInsights.ENABLED);
     }
 
-    public EcsStack(Construct scope,
-                    String id,
-                    StackProps props,
-                    Vpc vpc,
-                    ContainerInsights containerInsights) {
+    public EcsStack(Construct scope, String id, StackProps props, Vpc vpc, ContainerInsights containerInsights) {
         super(scope, id, props);
 
         cluster = Cluster.Builder.create(this, "Cluster")
@@ -30,11 +23,9 @@ public class EcsStack extends Stack {
                 .enableFargateCapacityProviders(true)
                 .containerInsightsV2(containerInsights)
                 .build();
-
     }
 
     public Cluster getCluster() {
         return cluster;
     }
-
 }

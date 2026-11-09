@@ -1,15 +1,14 @@
 package de.e2n.cdk.constructs;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import software.amazon.awscdk.Duration;
 import software.amazon.awscdk.services.batch.EcsContainerDefinitionProps;
 import software.amazon.awscdk.services.batch.OrderedComputeEnvironment;
 import software.amazon.awscdk.services.events.Schedule;
 import software.amazon.awscdk.services.iam.PolicyDocument;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Die Konfiguration eines AWs-Batch-Jobs auf Fargate-Container Basis.
@@ -19,21 +18,22 @@ public class BatchJobConfig {
 
     private final List<String> jobCommand;
     private final String dockerfilePath;
-    private final Map<String,PolicyDocument> inlinePolicies;
+    private final Map<String, PolicyDocument> inlinePolicies;
     private final List<Schedule> schedules;
     private final Duration timeout;
     private final int vCpus;
     private final int memoryLimitMiB;
     private final List<OrderedComputeEnvironment> orderedComputeEnvironments;
 
-    public BatchJobConfig(List<String> jobCommand,
-                          String dockerfilePath,
-                          Map<String,PolicyDocument> inlinePolicies,
-                          List<Schedule> schedules,
-                          Duration timeout,
-                          int vCpus,
-                          int memoryLimitMiB,
-                          List<OrderedComputeEnvironment> orderedComputeEnvironments) {
+    public BatchJobConfig(
+            List<String> jobCommand,
+            String dockerfilePath,
+            Map<String, PolicyDocument> inlinePolicies,
+            List<Schedule> schedules,
+            Duration timeout,
+            int vCpus,
+            int memoryLimitMiB,
+            List<OrderedComputeEnvironment> orderedComputeEnvironments) {
         this.jobCommand = jobCommand;
         this.dockerfilePath = dockerfilePath;
         this.inlinePolicies = inlinePolicies;
@@ -52,7 +52,7 @@ public class BatchJobConfig {
         return dockerfilePath;
     }
 
-    public Map<String,PolicyDocument> getInlinePolicies() {
+    public Map<String, PolicyDocument> getInlinePolicies() {
         return inlinePolicies;
     }
 
@@ -83,7 +83,7 @@ public class BatchJobConfig {
 
         private List<String> jobCommand;
         private String dockerfilePath;
-        private final Map<String,PolicyDocument> inlinePolicies = new LinkedHashMap<>();
+        private final Map<String, PolicyDocument> inlinePolicies = new LinkedHashMap<>();
         private final List<Schedule> schedules = new ArrayList<>();
         private Duration timeout = Duration.minutes(15);
         private int vCpus = 1;
@@ -192,7 +192,8 @@ public class BatchJobConfig {
          * @param orderedComputeEnvironments The ordered compute environments.
          * @return {@link BatchJobConfig.Builder}
          */
-        public BatchJobConfig.Builder setOrderedComputeEnvironments(List<OrderedComputeEnvironment> orderedComputeEnvironments) {
+        public BatchJobConfig.Builder setOrderedComputeEnvironments(
+                List<OrderedComputeEnvironment> orderedComputeEnvironments) {
             this.orderedComputeEnvironments = orderedComputeEnvironments;
             return this;
         }
@@ -202,15 +203,15 @@ public class BatchJobConfig {
          * @return {@link BatchJobConfig}
          */
         public BatchJobConfig build() {
-            return new BatchJobConfig(jobCommand,
-                                      dockerfilePath,
-                                      inlinePolicies,
-                                      schedules,
-                                      timeout,
-                                      vCpus,
-                                      memoryLimitMiB,
-                                      orderedComputeEnvironments);
+            return new BatchJobConfig(
+                    jobCommand,
+                    dockerfilePath,
+                    inlinePolicies,
+                    schedules,
+                    timeout,
+                    vCpus,
+                    memoryLimitMiB,
+                    orderedComputeEnvironments);
         }
     }
-
 }

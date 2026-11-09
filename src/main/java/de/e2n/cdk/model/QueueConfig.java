@@ -11,7 +11,11 @@ public class QueueConfig {
 
     private final DeadLetterQueueConfig deadLetterQueueConfig;
 
-    public QueueConfig(int batchSize, boolean fifo, boolean contentBasedDeduplication, DeadLetterQueueConfig deadLetterQueueConfig) {
+    public QueueConfig(
+            int batchSize,
+            boolean fifo,
+            boolean contentBasedDeduplication,
+            DeadLetterQueueConfig deadLetterQueueConfig) {
         this.batchSize = batchSize;
         this.fifo = fifo;
         this.contentBasedDeduplication = contentBasedDeduplication;
@@ -43,7 +47,8 @@ public class QueueConfig {
         private boolean contentBasedDeduplication = false;
         private int batchSize = 5;
 
-        private DeadLetterQueueConfig deadLetterQueueConfig = DeadLetterQueueConfig.Builder.create().build(); // gets initialized with default values
+        private DeadLetterQueueConfig deadLetterQueueConfig =
+                DeadLetterQueueConfig.Builder.create().build(); // gets initialized with default values
 
         private Builder() {}
 
@@ -110,7 +115,5 @@ public class QueueConfig {
         public QueueConfig build() {
             return new QueueConfig(batchSize, fifo, contentBasedDeduplication, deadLetterQueueConfig);
         }
-
     }
-
 }

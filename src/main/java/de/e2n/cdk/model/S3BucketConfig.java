@@ -1,5 +1,6 @@
 package de.e2n.cdk.model;
 
+import java.util.List;
 import software.amazon.awscdk.RemovalPolicy;
 import software.amazon.awscdk.services.kms.IKey;
 import software.amazon.awscdk.services.s3.BlockPublicAccess;
@@ -7,8 +8,6 @@ import software.amazon.awscdk.services.s3.BucketEncryption;
 import software.amazon.awscdk.services.s3.CorsRule;
 import software.amazon.awscdk.services.s3.IBucket;
 import software.amazon.awscdk.services.s3.LifecycleRule;
-
-import java.util.List;
 
 /**
  * Die Konfiguration eines AWS S3-Buckets. Wird per {@link Builder} initialisiert.
@@ -35,22 +34,23 @@ public class S3BucketConfig {
     private final String serverAccessLogsPrefix;
     private final boolean eventBridgeEnabled;
 
-    public S3BucketConfig(String bucketName,
-                          boolean versioned,
-                          BucketEncryption encryption,
-                          IKey encryptionKey,
-                          BlockPublicAccess blockPublicAccess,
-                          boolean publicReadAccess,
-                          RemovalPolicy removalPolicy,
-                          boolean autoDeleteObjects,
-                          boolean enforceSSL,
-                          List<LifecycleRule> lifecycleRules,
-                          List<CorsRule> corsRules,
-                          String websiteIndexDocument,
-                          String websiteErrorDocument,
-                          IBucket serverAccessLogsBucket,
-                          String serverAccessLogsPrefix,
-                          boolean eventBridgeEnabled) {
+    public S3BucketConfig(
+            String bucketName,
+            boolean versioned,
+            BucketEncryption encryption,
+            IKey encryptionKey,
+            BlockPublicAccess blockPublicAccess,
+            boolean publicReadAccess,
+            RemovalPolicy removalPolicy,
+            boolean autoDeleteObjects,
+            boolean enforceSSL,
+            List<LifecycleRule> lifecycleRules,
+            List<CorsRule> corsRules,
+            String websiteIndexDocument,
+            String websiteErrorDocument,
+            IBucket serverAccessLogsBucket,
+            String serverAccessLogsPrefix,
+            boolean eventBridgeEnabled) {
         this.bucketName = bucketName;
         this.versioned = versioned;
         this.encryption = encryption;
@@ -155,8 +155,7 @@ public class S3BucketConfig {
         private String serverAccessLogsPrefix;
         private boolean eventBridgeEnabled = false;
 
-        private Builder() {
-        }
+        private Builder() {}
 
         /**
          * @return {@link Builder} ein neuer Builder.
@@ -359,10 +358,7 @@ public class S3BucketConfig {
                     websiteErrorDocument,
                     serverAccessLogsBucket,
                     serverAccessLogsPrefix,
-                    eventBridgeEnabled
-            );
+                    eventBridgeEnabled);
         }
-
     }
-
 }

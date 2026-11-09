@@ -7,7 +7,8 @@ import software.amazon.awscdk.services.lambda.Version;
 public interface ILambda {
 
     Function getFunction();
-    Version getVersion();
-    Alias getAlias();
 
+    Version getVersion();
+
+    Alias getAlias();
 }

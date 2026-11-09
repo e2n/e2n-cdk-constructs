@@ -21,5 +21,4 @@ public class ACMCertificate extends Construct {
     public Certificate getCertificate() {
         return certificate;
     }
-
 }

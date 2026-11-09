@@ -1,5 +1,8 @@
 package de.e2n.cdk.constructs;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 import software.amazon.awscdk.Duration;
 import software.amazon.awscdk.services.cloudwatch.Dashboard;
@@ -10,47 +13,36 @@ import software.amazon.awscdk.services.cloudwatch.Metric;
 import software.amazon.awscdk.services.cloudwatch.TextWidget;
 import software.constructs.Construct;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 public class CognitoServiceQuotaCloudwatchDashboard extends Construct {
 
     private final Dashboard dashboard;
     private final List<MathExpression> serviceQuotaUtilizationMetrics;
 
-    public CognitoServiceQuotaCloudwatchDashboard(final Construct scope,
-                                                  final String id,
-                                                  String namespace,
-                                                  @Nullable TextWidget infoTextWidget) {
+    public CognitoServiceQuotaCloudwatchDashboard(
+            final Construct scope, final String id, String namespace, @Nullable TextWidget infoTextWidget) {
         super(scope, id);
 
         // % Utilization of service quotas
         // https://docs.aws.amazon.com/cognito/latest/developerguide/limits.html#category_operations
-        List<String> serviceQuotaCategories = List.of("ClientAuthentication",
-                                                      "UserAuthentication",
-                                                      "UserToken",
-                                                      "UserFederation",
-                                                      "UserCreation",
-                                                      "UserUpdate",
-                                                      "UserRead",
-                                                      "UserResourceRead",
-                                                      "UserResourceUpdate",
-                                                      "UserAccountRecovery");
+        List<String> serviceQuotaCategories = List.of(
+                "ClientAuthentication",
+                "UserAuthentication",
+                "UserToken",
+                "UserFederation",
+                "UserCreation",
+                "UserUpdate",
+                "UserRead",
+                "UserResourceRead",
+                "UserResourceUpdate",
+                "UserAccountRecovery");
         serviceQuotaUtilizationMetrics = new ArrayList<>();
 
         for (String category : serviceQuotaCategories) {
             Metric callCount = Metric.Builder.create()
                     .metricName("CallCount")
                     .namespace("AWS/Usage")
-                    .dimensionsMap(Map.of("Service",
-                                                "Cognito User Pool",
-                                                "Resource",
-                                                category,
-                                                "Class",
-                                                "None",
-                                                "Type",
-                                                "API"))
+                    .dimensionsMap(Map.of(
+                            "Service", "Cognito User Pool", "Resource", category, "Class", "None", "Type", "API"))
                     .statistic("SampleCount")
                     .period(Duration.minutes(1))
                     .build();
@@ -82,7 +74,6 @@ public class CognitoServiceQuotaCloudwatchDashboard extends Construct {
                 .defaultInterval(Duration.hours(3))
                 .widgets(widgets)
                 .build();
-
     }
 
     public Dashboard getDashboard() {
@@ -92,5 +83,4 @@ public class CognitoServiceQuotaCloudwatchDashboard extends Construct {
     public List<MathExpression> getServiceQuotaUtilizationMetrics() {
         return serviceQuotaUtilizationMetrics;
     }
-
 }

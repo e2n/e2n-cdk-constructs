@@ -26,10 +26,12 @@ public class VpcPeeringRequesterStack extends Stack {
         vpcPeeringRequester = new VpcPeeringRequester(this, "VpcPeeringRequester", vpcPeeringRequesterProps);
         var vpcPeeringConnection = vpcPeeringRequester.getVpcPeeringConnection();
 
-        // its not possible to share refs or resources cross stack + cross account. We do it with SSM and a custom resource.
+        // its not possible to share refs or resources cross stack + cross account. We do it with SSM and a custom
+        // resource.
         var ssmParameter = StringParameter.Builder.create(this, "VpcPeeringConnectionRefSsmParameter")
                 .parameterName("/" + id + "/VpcConnectionRef")
-                .description("cloudformation reference of our vpc peering connection between the landing zone and our main account")
+                .description(
+                        "cloudformation reference of our vpc peering connection between the landing zone and our main account")
                 .stringValue(vpcPeeringConnection.getRef())
                 .build();
         this.vpcPeeringConnectionRefSsmParameterName = ssmParameter.getParameterName();
@@ -53,5 +55,4 @@ public class VpcPeeringRequesterStack extends Stack {
     public Role getCrossAccountSsmParameterReaderRole() {
         return crossAccountSsmParameterReaderRole;
     }
-
 }

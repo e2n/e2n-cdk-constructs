@@ -1,19 +1,19 @@
 package de.e2n.cdk.stacks;
 
 import de.e2n.cdk.utils.SortedMap;
+import java.util.List;
+import java.util.Map;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
 import software.amazon.awscdk.services.iam.*;
 import software.constructs.Construct;
 
-import java.util.List;
-import java.util.Map;
-
 public class GithubActionRoleStack extends Stack {
 
     private static final String CLIENT_ID = "sts.amazonaws.com";
 
-    // The format of githubRepositoryCondition defines for which GitHub Organization, Repository and Branch the role is valid.
+    // The format of githubRepositoryCondition defines for which GitHub Organization, Repository and Branch the role is
+    // valid.
     // see https://aws.amazon.com/de/blogs/security/use-iam-roles-to-connect-github-actions-to-actions-in-aws/
     public GithubActionRoleStack(Construct scope, String id, StackProps props, String githubRepositoryCondition) {
         super(scope, id, props);

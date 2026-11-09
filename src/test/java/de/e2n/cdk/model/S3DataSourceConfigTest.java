@@ -1,5 +1,8 @@
 package de.e2n.cdk.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import software.amazon.awscdk.App;
@@ -9,10 +12,6 @@ import software.amazon.awscdk.services.bedrock.CfnDataSource.ServerSideEncryptio
 import software.amazon.awscdk.services.bedrock.CfnDataSource.VectorIngestionConfigurationProperty;
 import software.amazon.awscdk.services.s3.Bucket;
 import software.amazon.awscdk.services.s3.IBucket;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class S3DataSourceConfigTest {
 
@@ -43,11 +42,12 @@ public class S3DataSourceConfigTest {
                 ServerSideEncryptionConfigurationProperty.builder()
                         .kmsKeyArn("arn:aws:kms:eu-central-1:123456789012:key/my-key")
                         .build();
-        VectorIngestionConfigurationProperty vectorIngestionConfiguration = VectorIngestionConfigurationProperty.builder()
-                .chunkingConfiguration(ChunkingConfigurationProperty.builder()
-                        .chunkingStrategy("NONE")
-                        .build())
-                .build();
+        VectorIngestionConfigurationProperty vectorIngestionConfiguration =
+                VectorIngestionConfigurationProperty.builder()
+                        .chunkingConfiguration(ChunkingConfigurationProperty.builder()
+                                .chunkingStrategy("NONE")
+                                .build())
+                        .build();
 
         S3DataSourceConfig config = S3DataSourceConfig.Builder.create()
                 .name("my-datasource")
@@ -68,27 +68,28 @@ public class S3DataSourceConfigTest {
 
     @Test
     void nameFehltWirftException() {
-        assertThrows(IllegalArgumentException.class, () -> S3DataSourceConfig.Builder.create()
-                .bucket(bucket)
-                .build());
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> S3DataSourceConfig.Builder.create().bucket(bucket).build());
     }
 
     @Test
     void bucketOptionalWennNichtGesetzt() {
-        S3DataSourceConfig config = S3DataSourceConfig.Builder.create()
-                .name("my-datasource")
-                .build();
+        S3DataSourceConfig config =
+                S3DataSourceConfig.Builder.create().name("my-datasource").build();
 
         assertNull(config.getBucket());
     }
 
     @Test
     void mehrAlsEinInclusionPrefixWirftException() {
-        assertThrows(IllegalArgumentException.class, () -> S3DataSourceConfig.Builder.create()
-                .name("my-datasource")
-                .bucket(bucket)
-                .inclusionPrefixes(List.of("docs/", "faq/"))
-                .build());
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> S3DataSourceConfig.Builder.create()
+                        .name("my-datasource")
+                        .bucket(bucket)
+                        .inclusionPrefixes(List.of("docs/", "faq/"))
+                        .build());
     }
 
     @Test

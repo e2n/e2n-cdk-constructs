@@ -21,5 +21,4 @@ public class KeyStack extends Stack {
     public Key getKey() {
         return key;
     }
-
 }

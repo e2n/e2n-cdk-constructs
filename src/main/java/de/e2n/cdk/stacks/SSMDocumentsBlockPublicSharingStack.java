@@ -1,11 +1,10 @@
 package de.e2n.cdk.stacks;
 
+import java.util.Map;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
 import software.amazon.awscdk.customresources.*;
 import software.constructs.Construct;
-
-import java.util.Map;
 
 /**
  * CDK Stack zum Blockieren der öffentlichen Freigabe von AWS Systems Manager (SSM) Dokumenten.
@@ -41,16 +40,13 @@ public class SSMDocumentsBlockPublicSharingStack extends Stack {
                 .action("updateServiceSetting")
                 .parameters(Map.of(
                         "SettingId", "/ssm/documents/console/public-sharing-permission",
-                        "SettingValue", "Disable"
-                ))
+                        "SettingValue", "Disable"))
                 .physicalResourceId(PhysicalResourceId.of("SSMDocumentsBlockPublicSharing"))
                 .build();
 
-
-        var policy = AwsCustomResourcePolicy.fromSdkCalls(
-                SdkCallsPolicyOptions.builder()
-                        .resources(AwsCustomResourcePolicy.ANY_RESOURCE)
-                        .build());
+        var policy = AwsCustomResourcePolicy.fromSdkCalls(SdkCallsPolicyOptions.builder()
+                .resources(AwsCustomResourcePolicy.ANY_RESOURCE)
+                .build());
 
         AwsCustomResource.Builder.create(this, id)
                 .onCreate(call)
@@ -60,5 +56,4 @@ public class SSMDocumentsBlockPublicSharingStack extends Stack {
                 .installLatestAwsSdk(false)
                 .build();
     }
-
 }

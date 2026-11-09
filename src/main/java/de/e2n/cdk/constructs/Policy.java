@@ -34,5 +34,4 @@ public class Policy {
     public PolicyDocument getDocument() {
         return document;
     }
-
 }

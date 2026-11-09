@@ -1,10 +1,9 @@
 package de.e2n.cdk.constructs;
 
+import java.util.List;
 import software.amazon.awscdk.CfnTag;
 import software.amazon.awscdk.services.ec2.CfnVPCPeeringConnection;
 import software.constructs.Construct;
-
-import java.util.List;
 
 /**
  * Creates a vpc peering connection from given source (requester) environment towards the declared target (accepting) env.
@@ -27,9 +26,9 @@ public class VpcPeeringRequester extends Construct {
                 .peerRegion(props.accepterRegion)
                 .peerRoleArn(props.accepterRoleArn)
                 .tags(List.of(CfnTag.builder()
-                                      .key("landing-zone")
-                                      .value(props.landingZoneName)
-                                      .build()))
+                        .key("landing-zone")
+                        .value(props.landingZoneName)
+                        .build()))
                 .build();
     }
 
@@ -49,12 +48,13 @@ public class VpcPeeringRequester extends Construct {
         String accepterRegion;
         String accepterRoleArn;
 
-        public Props(String landingZoneName,
-                     String requesterVpcId,
-                     String accepterVpcId,
-                     String accepterAwsAccountId,
-                     String accepterRegion,
-                     String accepterRoleArn) {
+        public Props(
+                String landingZoneName,
+                String requesterVpcId,
+                String accepterVpcId,
+                String accepterAwsAccountId,
+                String accepterRegion,
+                String accepterRoleArn) {
             this.landingZoneName = landingZoneName;
             this.requesterVpcId = requesterVpcId;
             this.accepterVpcId = accepterVpcId;
@@ -62,9 +62,5 @@ public class VpcPeeringRequester extends Construct {
             this.accepterRegion = accepterRegion;
             this.accepterRoleArn = accepterRoleArn;
         }
-
     }
-
 }
-
-

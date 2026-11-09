@@ -1,9 +1,9 @@
 package de.e2n.cdk.constructs;
 
-import software.constructs.Construct;
 import software.amazon.awscdk.services.apigateway.DomainName;
 import software.amazon.awscdk.services.apigateway.DomainNameAttributes;
 import software.amazon.awscdk.services.apigateway.IDomainName;
+import software.constructs.Construct;
 
 /**
  * Ermöglicht das Referenzieren einer existierenden APIGateway Domain Name Ressource
@@ -24,22 +24,21 @@ public class ExistingDomainName extends Construct {
      * @param aliasTarget Der API Gateway Domain Name
      *                    (z.B. `abc1234.execute-api.eu-central-1.amazonaws.com`)
      */
-    public ExistingDomainName(final Construct scope,
-                              final String id,
-                              String domainName,
-                              String aliasHostedZoneId,
-                              String aliasTarget) {
+    public ExistingDomainName(
+            final Construct scope, final String id, String domainName, String aliasHostedZoneId, String aliasTarget) {
         super(scope, id);
 
-        this.iDomainName = DomainName.fromDomainNameAttributes(this, id, DomainNameAttributes.builder()
-                .domainName(domainName)
-                .domainNameAliasHostedZoneId(aliasHostedZoneId)
-                .domainNameAliasTarget(aliasTarget)
-                .build());
+        this.iDomainName = DomainName.fromDomainNameAttributes(
+                this,
+                id,
+                DomainNameAttributes.builder()
+                        .domainName(domainName)
+                        .domainNameAliasHostedZoneId(aliasHostedZoneId)
+                        .domainNameAliasTarget(aliasTarget)
+                        .build());
     }
 
     public IDomainName getiDomainName() {
         return iDomainName;
     }
-
 }

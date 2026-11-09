@@ -19,12 +19,13 @@ public class KnowledgeBaseConfig {
     private final EmbeddingModelConfigurationProperty embeddingModelConfiguration;
     private final ManagedKnowledgeBaseServerSideEncryptionConfigurationProperty serverSideEncryptionConfiguration;
 
-    public KnowledgeBaseConfig(String name,
-                               String description,
-                               IRole role,
-                               String embeddingModelArn,
-                               EmbeddingModelConfigurationProperty embeddingModelConfiguration,
-                               ManagedKnowledgeBaseServerSideEncryptionConfigurationProperty serverSideEncryptionConfiguration) {
+    public KnowledgeBaseConfig(
+            String name,
+            String description,
+            IRole role,
+            String embeddingModelArn,
+            EmbeddingModelConfigurationProperty embeddingModelConfiguration,
+            ManagedKnowledgeBaseServerSideEncryptionConfigurationProperty serverSideEncryptionConfiguration) {
         this.name = name;
         this.description = description;
         this.role = role;
@@ -69,8 +70,7 @@ public class KnowledgeBaseConfig {
         private EmbeddingModelConfigurationProperty embeddingModelConfiguration;
         private ManagedKnowledgeBaseServerSideEncryptionConfigurationProperty serverSideEncryptionConfiguration;
 
-        private Builder() {
-        }
+        private Builder() {}
 
         /**
          * @return {@link Builder} a new builder.
@@ -141,7 +141,8 @@ public class KnowledgeBaseConfig {
          * @param serverSideEncryptionConfiguration The encryption configuration of the vector store.
          * @return {@link Builder}
          */
-        public Builder serverSideEncryptionConfiguration(ManagedKnowledgeBaseServerSideEncryptionConfigurationProperty serverSideEncryptionConfiguration) {
+        public Builder serverSideEncryptionConfiguration(
+                ManagedKnowledgeBaseServerSideEncryptionConfigurationProperty serverSideEncryptionConfiguration) {
             this.serverSideEncryptionConfiguration = serverSideEncryptionConfiguration;
             return this;
         }
@@ -162,10 +163,7 @@ public class KnowledgeBaseConfig {
                     role,
                     embeddingModelArn,
                     embeddingModelConfiguration,
-                    serverSideEncryptionConfiguration
-            );
+                    serverSideEncryptionConfiguration);
         }
-
     }
-
 }

@@ -3,16 +3,15 @@ package de.e2n.cdk.constructs;
 import de.e2n.cdk.model.KnowledgeBaseConfig;
 import de.e2n.cdk.model.S3BucketConfig;
 import de.e2n.cdk.model.S3DataSourceConfig;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.services.bedrock.CfnDataSource;
 import software.amazon.awscdk.services.bedrock.CfnKnowledgeBase;
 import software.amazon.awscdk.services.iam.*;
 import software.amazon.awscdk.services.s3.IBucket;
 import software.constructs.Construct;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This class creates a configurable AWS Bedrock Managed Knowledge Base with an S3 bucket
@@ -35,15 +34,20 @@ public class ManagedKnowledgeBase extends Construct {
     private final CfnKnowledgeBase knowledgeBase;
     private final CfnDataSource dataSource;
 
-    public ManagedKnowledgeBase(final Construct scope,
-                                final String id,
-                                final KnowledgeBaseConfig knowledgeBaseConfig,
-                                final S3DataSourceConfig s3DataSourceConfig) {
+    public ManagedKnowledgeBase(
+            final Construct scope,
+            final String id,
+            final KnowledgeBaseConfig knowledgeBaseConfig,
+            final S3DataSourceConfig s3DataSourceConfig) {
         super(scope, id);
 
         IBucket bucket;
         if (s3DataSourceConfig.getBucket() == null) {
-            bucket = new S3Bucket(this, "KnowledgeBaseS3Bucket", S3BucketConfig.Builder.create().build()).getBucket();
+            bucket = new S3Bucket(
+                            this,
+                            "KnowledgeBaseS3Bucket",
+                            S3BucketConfig.Builder.create().build())
+                    .getBucket();
         } else {
             bucket = s3DataSourceConfig.getBucket();
         }
@@ -51,9 +55,15 @@ public class ManagedKnowledgeBase extends Construct {
         IRole role;
         if (knowledgeBaseConfig.getRole() == null) {
             Role defaultRole = Role.Builder.create(this, "DefaultKnowledgeBaseRole")
-                    .assumedBy(new ServicePrincipal("bedrock.amazonaws.com", ServicePrincipalOpts.builder()
-                            .conditions(Map.of("StringEquals", Map.of("aws:SourceAccount", Stack.of(this).getAccount())))
-                            .build()))
+                    .assumedBy(new ServicePrincipal(
+                            "bedrock.amazonaws.com",
+                            ServicePrincipalOpts.builder()
+                                    .conditions(Map.of(
+                                            "StringEquals",
+                                            Map.of(
+                                                    "aws:SourceAccount",
+                                                    Stack.of(this).getAccount())))
+                                    .build()))
                     .build();
 
             if (knowledgeBaseConfig.getEmbeddingModelArn() != null) {
@@ -89,17 +99,15 @@ public class ManagedKnowledgeBase extends Construct {
 
         Map<String, Object> connectionConfiguration = Map.of(
                 "bucketName", bucket.getBucketName(),
-                "bucketOwnerAccountId", Stack.of(this).getAccount()
-        );
+                "bucketOwnerAccountId", Stack.of(this).getAccount());
 
         Map<String, Object> connectorParameters = new HashMap<>();
         connectorParameters.put("type", "S3");
         connectorParameters.put("version", "1");
         connectorParameters.put("connectionConfiguration", connectionConfiguration);
         if (s3DataSourceConfig.getInclusionPrefixes() != null) {
-            connectorParameters.put("filterConfiguration", Map.of(
-                    "inclusionPrefixes", s3DataSourceConfig.getInclusionPrefixes()
-            ));
+            connectorParameters.put(
+                    "filterConfiguration", Map.of("inclusionPrefixes", s3DataSourceConfig.getInclusionPrefixes()));
         }
 
         var managedConnectorConfig = CfnDataSource.ManagedKnowledgeBaseConnectorConfigurationProperty.builder()

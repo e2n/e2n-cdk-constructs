@@ -1,6 +1,7 @@
 package de.e2n.cdk.stacks;
 
 import de.e2n.cdk.utils.SortedMap;
+import java.util.List;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
 import software.amazon.awscdk.services.cloudfront.IDistribution;
@@ -20,8 +21,6 @@ import software.amazon.awscdk.services.ecr.IRepository;
 import software.amazon.awscdk.services.s3.IBucket;
 import software.constructs.Construct;
 
-import java.util.List;
-
 /**
  * The {@code FrontendCICDStack} creates a CodePipeline. Every commit to ECR deploys to S3/Cloudfront.
  */
@@ -30,14 +29,15 @@ public class CloudfrontContinuousDeliveryStack extends Stack {
     private final String name;
     private final String imageTag;
 
-    public CloudfrontContinuousDeliveryStack(Construct scope,
-                                             String id,
-                                             StackProps props,
-                                             String name,
-                                             IRepository repository,
-                                             IBucket originBucket,
-                                             IDistribution distribution,
-                                             String imageTag) {
+    public CloudfrontContinuousDeliveryStack(
+            Construct scope,
+            String id,
+            StackProps props,
+            String name,
+            IRepository repository,
+            IBucket originBucket,
+            IDistribution distribution,
+            String imageTag) {
 
         super(scope, id, props);
 
@@ -72,8 +72,9 @@ public class CloudfrontContinuousDeliveryStack extends Stack {
                 .build();
     }
 
-//     We need here a appoval stage because the frontend pipeline is faster than the backend pipeline and we need to wait.
-     StageProps approvalStage() {
+    //     We need here a appoval stage because the frontend pipeline is faster than the backend pipeline and we need to
+    // wait.
+    StageProps approvalStage() {
         var approvalAction = ManualApprovalAction.Builder.create()
                 .actionName("ApprovalAction")
                 .build();
@@ -97,37 +98,49 @@ public class CloudfrontContinuousDeliveryStack extends Stack {
         PipelineProject project = PipelineProject.Builder.create(this, name + "-Deploy")
                 .environment(environment)
                 .environmentVariables(SortedMap.of(
-                        "CONTAINER_NAME", BuildEnvironmentVariable.builder()
-                                .value(repository.getRepositoryName())
-                                .build(),
-                        "REPOSITORY_URI", BuildEnvironmentVariable.builder()
-                                .value(repository.getRepositoryUri() + ":" + imageTag)
-                                .build(),
-                        "ORIGIN_BUCKET_S3_URL", BuildEnvironmentVariable.builder()
-                                .value(originBucket.s3UrlForObject())
-                                .build(),
-                        "CLOUDFRONT_ID", BuildEnvironmentVariable.builder()
-                                .value(distribution.getDistributionId())
-                                .build()
-                ))
-                .buildSpec(BuildSpec.fromObject(SortedMap.of(
-                        "version", "0.2",
-                        "phases", SortedMap.of(
-                                "install", SortedMap.of(
-                                        "runtime-versions", SortedMap.of(
-                                                "golang", "latest"),
-                                        "commands", List.of(
-                                                //"go get -u github.com/awslabs/amazon-ecr-credential-helper/ecr-login/cli/docker-credential-ecr-login",
-                                                // https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
-                                                "AWS_ACCOUNT_ID=$(echo $CODEBUILD_BUILD_ARN | cut -d':' -f5)",
-                                                "aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com")),
-                        "build", SortedMap.of(
-                                        "commands", List.of(
-                                                // extract the static files of the application from the docker image
-                                                "docker cp $(docker create --name $CONTAINER_NAME $REPOSITORY_URI):/usr/share/nginx/html . && docker rm $CONTAINER_NAME",
-                                                "aws s3 cp html $ORIGIN_BUCKET_S3_URL --exclude index.html --recursive --metadata-directive REPLACE --expires $(date '+%Y-%m-%dT%H:%M:%SZ' -d '+30 days') --cache-control max-age=2592000",
-                                                "aws s3 cp html/index.html $ORIGIN_BUCKET_S3_URL --metadata-directive REPLACE --cache-control 'no-cache'",
-                                                "aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_ID} --paths \"/*\""))))))
+                        "CONTAINER_NAME",
+                                BuildEnvironmentVariable.builder()
+                                        .value(repository.getRepositoryName())
+                                        .build(),
+                        "REPOSITORY_URI",
+                                BuildEnvironmentVariable.builder()
+                                        .value(repository.getRepositoryUri() + ":" + imageTag)
+                                        .build(),
+                        "ORIGIN_BUCKET_S3_URL",
+                                BuildEnvironmentVariable.builder()
+                                        .value(originBucket.s3UrlForObject())
+                                        .build(),
+                        "CLOUDFRONT_ID",
+                                BuildEnvironmentVariable.builder()
+                                        .value(distribution.getDistributionId())
+                                        .build()))
+                .buildSpec(
+                        BuildSpec.fromObject(
+                                SortedMap.of(
+                                        "version",
+                                        "0.2",
+                                        "phases",
+                                        SortedMap.of(
+                                                "install",
+                                                SortedMap.of(
+                                                        "runtime-versions", SortedMap.of("golang", "latest"),
+                                                        "commands",
+                                                                List.of(
+                                                                        // "go get -u
+                                                                        // github.com/awslabs/amazon-ecr-credential-helper/ecr-login/cli/docker-credential-ecr-login",
+                                                                        // https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
+                                                                        "AWS_ACCOUNT_ID=$(echo $CODEBUILD_BUILD_ARN | cut -d':' -f5)",
+                                                                        "aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com")),
+                                                "build",
+                                                SortedMap.of(
+                                                        "commands",
+                                                        List.of(
+                                                                // extract the static files of the application from the
+                                                                // docker image
+                                                                "docker cp $(docker create --name $CONTAINER_NAME $REPOSITORY_URI):/usr/share/nginx/html . && docker rm $CONTAINER_NAME",
+                                                                "aws s3 cp html $ORIGIN_BUCKET_S3_URL --exclude index.html --recursive --metadata-directive REPLACE --expires $(date '+%Y-%m-%dT%H:%M:%SZ' -d '+30 days') --cache-control max-age=2592000",
+                                                                "aws s3 cp html/index.html $ORIGIN_BUCKET_S3_URL --metadata-directive REPLACE --cache-control 'no-cache'",
+                                                                "aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_ID} --paths \"/*\""))))))
                 .build();
 
         repository.grantPull(project);
@@ -145,5 +158,4 @@ public class CloudfrontContinuousDeliveryStack extends Stack {
                 .actions(List.of(deployAction))
                 .build();
     }
-
 }

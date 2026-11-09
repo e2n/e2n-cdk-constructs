@@ -1,11 +1,10 @@
 package de.e2n.cdk.constructs;
 
+import java.util.List;
 import software.amazon.awscdk.services.ram.CfnResourceShare;
 import software.amazon.awscdk.services.ssm.ParameterTier;
 import software.amazon.awscdk.services.ssm.StringParameter;
 import software.constructs.Construct;
-
-import java.util.List;
 
 public class SSMParameterRAMWriter extends Construct {
 
@@ -14,18 +13,17 @@ public class SSMParameterRAMWriter extends Construct {
      * vonnöten.
      * https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-shared-parameters.html
      */
-    public SSMParameterRAMWriter(Construct scope,
-                                 String id,
-                                 String parameterName,
-                                 String parameterValue,
-                                 String resourceSharePrincipal) {
+    public SSMParameterRAMWriter(
+            Construct scope, String id, String parameterName, String parameterValue, String resourceSharePrincipal) {
         super(scope, id);
 
-        // its not possible to share refs or resources cross stack + cross account. We do it with SSM and a custom resource.
+        // its not possible to share refs or resources cross stack + cross account. We do it with SSM and a custom
+        // resource.
         var ssmParameter = StringParameter.Builder.create(this, "SsmParameter")
                 .parameterName(parameterName)
                 .tier(ParameterTier.ADVANCED)
-                .description("Ssm Parameter created with CDK in " + id).stringValue(parameterValue)
+                .description("Ssm Parameter created with CDK in " + id)
+                .stringValue(parameterValue)
                 .build();
 
         CfnResourceShare cfnResourceShare = CfnResourceShare.Builder.create(this, "ResourceShare")
