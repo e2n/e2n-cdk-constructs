@@ -9,8 +9,7 @@ import software.constructs.Construct;
 public class SSMParameterRAMWriter extends Construct {
 
     /**
-     * Erstellt einen durch AWS RAM in der Organization geteilten SSM Parameter. Es ist keine Cross-Account Reader Role
-     * vonnöten.
+     * Creates an SSM parameter shared through AWS RAM with the organization. No cross-account reader role is required.
      * https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-shared-parameters.html
      */
     public SSMParameterRAMWriter(
@@ -27,8 +26,8 @@ public class SSMParameterRAMWriter extends Construct {
                 .build();
 
         CfnResourceShare cfnResourceShare = CfnResourceShare.Builder.create(this, "ResourceShare")
-                // RAM akzeptiert keine Slashes (üblich und valide in SSM Parameternamen),
-                // wir ersetzen sie durch Bindestriche
+                // RAM does not accept slashes (which are common and valid in SSM parameter names),
+                // so replace them with hyphens.
                 .name(parameterName.replace("/", "-"))
                 .allowExternalPrincipals(false)
                 .principals(List.of(resourceSharePrincipal))

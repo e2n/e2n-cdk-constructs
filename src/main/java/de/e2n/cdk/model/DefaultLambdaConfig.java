@@ -17,7 +17,7 @@ import software.amazon.awscdk.services.lambda.Code;
 import software.amazon.awscdk.services.lambda.Runtime;
 
 /**
- * Die Konfiguration einer AWS Lambda-Function. Wird per {@link Builder} initialisiert.
+ * Configuration for an AWS Lambda function. Initialized using the {@link Builder}.
  */
 public class DefaultLambdaConfig {
 
@@ -172,7 +172,7 @@ public class DefaultLambdaConfig {
 
         /**
          *
-         * @return {@link Builder} ein neuer Builder.
+         * @return {@link Builder} a new builder.
          */
         public static Builder create() {
             return new Builder();
@@ -180,7 +180,7 @@ public class DefaultLambdaConfig {
 
         /**
          *
-         * @return {@link Builder} ein neuer Copy-Builder.
+         * @return {@link Builder} a new copy builder.
          */
         public static Builder create(DefaultLambdaConfig copy) {
             Builder builder = new Builder();
@@ -205,7 +205,7 @@ public class DefaultLambdaConfig {
 
         /**
          *
-         * @param name Der Name der Lambda.
+         * @param name The Lambda function name.
          * @return {@link Builder}
          */
         public Builder name(String name) {
@@ -214,8 +214,8 @@ public class DefaultLambdaConfig {
         }
 
         /**
-         * Der Klassenpfad des Handlers.
-         * @param handlerPath Der Pfad zum Handler.
+         * The handler class path.
+         * @param handlerPath The path to the handler.
          * @return {@link Builder}
          */
         public Builder handlerPath(String handlerPath) {
@@ -224,8 +224,8 @@ public class DefaultLambdaConfig {
         }
 
         /**
-         * Der Code der Lambda. Zum Beispiel per {@link Code#fromAsset(String)}.
-         * @param lambdaCode Der Code der Lambda.
+         * The Lambda function code, for example via {@link Code#fromAsset(String)}.
+         * @param lambdaCode The Lambda function code.
          * @return {@link Builder}
          */
         public Builder lambdaCode(Code lambdaCode) {
@@ -250,8 +250,7 @@ public class DefaultLambdaConfig {
         }
 
         /**
-         * @param policy Eine IAM-Policy, die als inline-Policy in der IAM-Role der Lambda gesetzt
-         *               wird.
+         * @param policy An IAM policy to set as an inline policy on the Lambda function's IAM role.
          * @return {@link Builder}
          */
         public Builder inlinePolicy(Policy policy) {
@@ -260,8 +259,8 @@ public class DefaultLambdaConfig {
         }
 
         /**
-         * Der Timeout der Lambda
-         * @param timeout Timeout als Duration, max. 15 Minuten
+         * The Lambda function timeout.
+         * @param timeout The timeout as a duration, up to 15 minutes.
          * @return {@link Builder}
          */
         public Builder timeout(Duration timeout) {
@@ -332,9 +331,9 @@ public class DefaultLambdaConfig {
         }
 
         /**
-         * Fügt der Lambda-Umgebung eine Variable hinzu.
-         * @param key Der Name der Umgebungsvariable.
-         * @param value Der Wert der Umgebungsvariable.
+         * Adds a variable to the Lambda function environment.
+         * @param key The environment variable name.
+         * @param value The environment variable value.
          * @return {@link Builder}
          */
         public Builder environmentVariable(String key, String value) {

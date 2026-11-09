@@ -15,10 +15,10 @@ import software.amazon.awscdk.services.lambda.Runtime;
 import software.constructs.Construct;
 
 /**
- * Diese Klasse erzeugt mittels AWS CDK eine AWS Lambda Function.
+ * This class uses AWS CDK to create an AWS Lambda function.
  *
- * Das CDK-Konstrukt besteht aus den folgenden AWS Ressourcen:
- * - eine AWS Lambda Function inklusive IAM Role, Version
+ * The CDK construct consists of the following AWS resources:
+ * - An AWS Lambda function with an IAM role and version
  */
 public class Lambda extends Construct implements ILambda {
 
@@ -33,7 +33,7 @@ public class Lambda extends Construct implements ILambda {
 
         Role role;
         if (lambdaConfig.getRole() == null) {
-            // Default-Role erstellen wenn keine übergeben wurde
+            // Create a default role if none was provided
             role = Role.Builder.create(this, "DefaultRole")
                     .managedPolicies(Arrays.asList(ManagedPolicy.fromManagedPolicyArn(
                             this,
@@ -49,11 +49,10 @@ public class Lambda extends Construct implements ILambda {
                 .role(role)
                 .code(lambdaConfig.getLambdaCode())
                 .handler(lambdaConfig.getHandlerPath())
-                /* Wir passen die Beschreibung der Lambda jedesmal an, um das Erzeugen einer neuen
-                 * Version zu erzwingen. Täten wir das nicht, würde das Deployment bei unverändertem Lambda-Code mit
+                /* Update the Lambda description each time to force creation of a new version.
+                 * Otherwise, deployment with unchanged Lambda code would fail with
                  * `A version for this Lambda function exists ( 13 ). Modify the function to create a new version.`
-                 * scheitern.
-                 * Siehe https://github.com/aws/aws-cdk/issues/5334
+                 * See https://github.com/aws/aws-cdk/issues/5334
                  */
                 .description(now.truncatedTo(ChronoUnit.SECONDS).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
                 .architecture(lambdaConfig.getArchitecture())

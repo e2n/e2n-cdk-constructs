@@ -12,14 +12,14 @@ import software.amazon.awscdk.services.sqs.QueueEncryption;
 import software.constructs.Construct;
 
 /**
- * Diese Klasse konstruiert mittels AWS CDK eine SQS-Queue und eine Consumer-Lambda.
- * Die erzeugte Consumer-Lambda wird von neuen Nachrichten in der Queue getriggert und liest diese.
+ * This class uses AWS CDK to create an SQS queue and a consumer Lambda.
+ * The consumer Lambda is triggered by new messages in the queue and processes them.
  *
  *  Queue --> Consumer
  *
- * Das CDK-Konstrukt besteht aus den folgenden AWS Ressourcen:
+ * The CDK construct consists of the following AWS resources:
  * - AWS Lambda Function inklusive IAM Role, Version & Alias
- * - eine SQS Queue + Deadletter-Queue
+ * - An SQS queue and dead-letter queue
  */
 public class ConsumerQueue extends Construct {
 

@@ -3,7 +3,7 @@ package de.e2n.cdk.model;
 import software.amazon.awscdk.Duration;
 
 /**
- * Die Konfiguration einer AWS SQS-dead-letter-Queue. Wird per {@link Builder} initialisiert.
+ * Configuration for an AWS SQS dead-letter queue. Initialized using the {@link Builder}.
  */
 public class DeadLetterQueueConfig {
 
@@ -52,7 +52,7 @@ public class DeadLetterQueueConfig {
         private Builder() {}
 
         /**
-         * Deaktiviert die DeadLetterQueue
+         * Disables the dead-letter queue.
          * @return {@link DeadLetterQueueConfig.Builder}
          */
         public Builder disabled() {
@@ -61,9 +61,9 @@ public class DeadLetterQueueConfig {
         }
 
         /**
-         * @param maximumReceives Der Wert Maximale Empfangsvorgänge bestimmt, wann eine Nachricht an die DLQ gesendet wird.
-         *                        Wenn der ReceiveCount-Wert für eine Nachricht die Anzahl der maximalen Empfangsvorgänge für eine Warteschlange überschreitet,
-         *                        verschiebt Amazon SQS die Nachricht in eine zugeordnete DLQ (mit der ursprünglichen Nachrichten-ID).
+         * @param maximumReceives The maximum number of receives before a message is sent to the DLQ.
+         *                        If a message's ReceiveCount exceeds this limit for a queue,
+         *                        Amazon SQS moves the message to the associated DLQ (with its original message ID).
          * @return {@link DeadLetterQueueConfig.Builder}
          */
         public Builder maximumReceives(int maximumReceives) {
@@ -74,8 +74,8 @@ public class DeadLetterQueueConfig {
         }
 
         /**
-         * @param receiveMessageWaitTime Die Wartezeit für das Empfangen von Nachrichten ist die maximale Zeitspanne, die Abfragen darauf warten, dass Nachrichten empfangen werden.
-         *                Der Mindestwert beträgt Null und der Höchstwert beträgt 20 Sekunden.
+         * @param receiveMessageWaitTime The maximum time that polling waits for messages to arrive.
+         *                               The minimum is zero and the maximum is 20 seconds.
          * @return {@link DeadLetterQueueConfig.Builder}
          */
         public Builder receiveMessageWaitTime(Duration receiveMessageWaitTime) {
@@ -86,9 +86,9 @@ public class DeadLetterQueueConfig {
         }
 
         /**
-         * @param retentionPeriod Der Aufbewahrungszeitraum für Nachrichten ist die Zeitspanne, die Amazon SQS Nachrichten beibehält, wenn sie nicht gelöscht werden.
-         *                        Amazon SQS löscht automatisch Nachrichten, die sich über den maximalen Aufbewahrungszeitraum für Nachrichten hinaus in einer Warteschlange befunden haben.
-         *                        Der Standardaufbewahrungszeitraum beträgt 4 Tage. Der Aufbewahrungszeitraum kann 60 Sekunden bis 1 209 600 Sekunden (14 Tage) umfassen.
+         * @param retentionPeriod The period for which Amazon SQS retains messages unless they are deleted.
+         *                        Amazon SQS automatically deletes messages that remain in a queue beyond the maximum retention period.
+         *                        The default retention period is 4 days. It can range from 60 seconds to 1,209,600 seconds (14 days).
          * @return {@link DeadLetterQueueConfig.Builder}
          */
         public Builder retentionPeriod(Duration retentionPeriod) {
@@ -111,7 +111,7 @@ public class DeadLetterQueueConfig {
         }
 
         /**
-         * @return {@link DeadLetterQueueConfig.Builder} ein neuer Builder.
+         * @return {@link DeadLetterQueueConfig.Builder} a new builder.
          */
         public static Builder create() {
             return new Builder();

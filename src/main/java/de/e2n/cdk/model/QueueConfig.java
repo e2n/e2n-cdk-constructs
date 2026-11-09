@@ -1,7 +1,7 @@
 package de.e2n.cdk.model;
 
 /**
- * Die Konfiguration einer AWS SQS-Queue. Wird per {@link Builder} initialisiert.
+ * Configuration for an AWS SQS queue. Initialized using the {@link Builder}.
  */
 public class QueueConfig {
 
@@ -54,8 +54,7 @@ public class QueueConfig {
 
         /**
          *
-         * @param batchSize die Anzahl der Messages, die je SQS-Event an die Consumer-Lambda
-         *                  gesendet werden soll. Default: 5
+         * @param batchSize The number of messages to send to the consumer Lambda for each SQS event. Default: 5
          * @return {@link QueueConfig.Builder}
          */
         public Builder batchSize(int batchSize) {
@@ -65,7 +64,7 @@ public class QueueConfig {
 
         /**
          *
-         * @return {@link QueueConfig.Builder} ein neuer Builder.
+         * @return {@link QueueConfig.Builder} a new builder.
          */
         public static Builder create() {
             return new Builder();
@@ -73,7 +72,7 @@ public class QueueConfig {
 
         /**
          *
-         * @param fifo Flag, ob die SQS-Queue vom Typ FIFO sein soll. Default: false
+         * @param fifo Whether the SQS queue should be a FIFO queue. Default: false
          * @return {@link QueueConfig.Builder}
          */
         public Builder fifo(boolean fifo) {
