@@ -1,6 +1,7 @@
 package de.e2n.cdk.stacks;
 
 import de.e2n.cdk.utils.SortedMap;
+import java.util.List;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
 import software.amazon.awscdk.services.codebuild.BuildEnvironment;
@@ -21,8 +22,6 @@ import software.amazon.awscdk.services.ecr.IRepository;
 import software.amazon.awscdk.services.iam.PolicyStatement;
 import software.constructs.Construct;
 
-import java.util.List;
-
 public class QuarkusBackendContinuousIntegrationStack extends Stack {
 
     private final Pipeline pipeline;
@@ -30,15 +29,16 @@ public class QuarkusBackendContinuousIntegrationStack extends Stack {
     private final String sourceBranch;
     private final String applicationArtifactId;
 
-    public QuarkusBackendContinuousIntegrationStack(Construct scope,
-                                                    String id,
-                                                    StackProps props,
-                                                    String name,
-                                                    String sourceBranch,
-                                                    String applicationArtifactId,
-                                                    software.amazon.awscdk.services.codecommit.IRepository gitRepo,
-                                                    IRepository ecrRepository,
-                                                    BuildSpec buildSpec) {
+    public QuarkusBackendContinuousIntegrationStack(
+            Construct scope,
+            String id,
+            StackProps props,
+            String name,
+            String sourceBranch,
+            String applicationArtifactId,
+            software.amazon.awscdk.services.codecommit.IRepository gitRepo,
+            IRepository ecrRepository,
+            BuildSpec buildSpec) {
         super(scope, id, props);
 
         this.name = name;
@@ -55,14 +55,15 @@ public class QuarkusBackendContinuousIntegrationStack extends Stack {
                 .build();
     }
 
-    public QuarkusBackendContinuousIntegrationStack(Construct scope,
-                                                    String id,
-                                                    StackProps props,
-                                                    String name,
-                                                    String sourceBranch,
-                                                    String applicationArtifactId,
-                                                    software.amazon.awscdk.services.codecommit.IRepository gitRepo,
-                                                    IRepository ecrRepository) {
+    public QuarkusBackendContinuousIntegrationStack(
+            Construct scope,
+            String id,
+            StackProps props,
+            String name,
+            String sourceBranch,
+            String applicationArtifactId,
+            software.amazon.awscdk.services.codecommit.IRepository gitRepo,
+            IRepository ecrRepository) {
         this(scope, id, props, name, sourceBranch, applicationArtifactId, gitRepo, ecrRepository, null);
     }
 
@@ -93,28 +94,31 @@ public class QuarkusBackendContinuousIntegrationStack extends Stack {
                 .buildSpec(buildSpec == null ? defaultBuildSpec() : buildSpec)
                 .environment(environment)
                 .environmentVariables(SortedMap.of(
-                        "REPOSITORY_NAME", BuildEnvironmentVariable.builder()
-                                .value(ecrRepo.getRepositoryName())
-                                .build(),
-                        "REPOSITORY_URI", BuildEnvironmentVariable.builder()
-                                .value(ecrRepo.getRepositoryUri())
-                                .build()
-                ))
+                        "REPOSITORY_NAME",
+                                BuildEnvironmentVariable.builder()
+                                        .value(ecrRepo.getRepositoryName())
+                                        .build(),
+                        "REPOSITORY_URI",
+                                BuildEnvironmentVariable.builder()
+                                        .value(ecrRepo.getRepositoryUri())
+                                        .build()))
                 .cache(Cache.local(LocalCacheMode.DOCKER_LAYER, LocalCacheMode.SOURCE, LocalCacheMode.CUSTOM))
                 .build();
 
         ecrRepo.grantPullPush(buildProject);
-        buildProject.getRole().addToPrincipalPolicy(
-                PolicyStatement.Builder.create()
-                        .actions(List.of("ecr:GetDownloadUrlForLayer",
-                                         "ecr:BatchGetImage",
-                                         "ecr:DescribeImages",
-                                         "ecr:DescribeRepositories",
-                                         "ecr:ListImages",
-                                         "ecr:BatchCheckLayerAvailability",
-                                         "ecr:DescribeRegistry",
-                                         "ecr:DescribePullThroughCacheRules",
-                                         "ecr:GetAuthorizationToken"))
+        buildProject
+                .getRole()
+                .addToPrincipalPolicy(PolicyStatement.Builder.create()
+                        .actions(List.of(
+                                "ecr:GetDownloadUrlForLayer",
+                                "ecr:BatchGetImage",
+                                "ecr:DescribeImages",
+                                "ecr:DescribeRepositories",
+                                "ecr:ListImages",
+                                "ecr:BatchCheckLayerAvailability",
+                                "ecr:DescribeRegistry",
+                                "ecr:DescribePullThroughCacheRules",
+                                "ecr:GetAuthorizationToken"))
                         .resources(List.of("*"))
                         .build());
 
@@ -133,9 +137,7 @@ public class QuarkusBackendContinuousIntegrationStack extends Stack {
     private BuildSpec defaultBuildSpec() {
         return de.e2n.cdk.model.BuildSpec.builder()
                 .version(de.e2n.cdk.model.BuildSpec.Version.V0_2)
-                .runtimeVersions(SortedMap.of(
-                        "java", "corretto21"
-                ))
+                .runtimeVersions(SortedMap.of("java", "corretto21"))
                 .installCommands(List.of(
                         "java --version",
                         "mvn -v",
@@ -145,8 +147,7 @@ public class QuarkusBackendContinuousIntegrationStack extends Stack {
                         "AWS_ECR_REGISTRY=\"$AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com\"",
                         // ecr login
                         "aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ECR_REGISTRY",
-                        "export COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-8)"
-                ))
+                        "export COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-8)"))
                 .buildCommands(List.of(
                         "export QUARKUS_CONTAINER_IMAGE_BUILD=TRUE",
                         "export QUARKUS_CONTAINER_IMAGE_REGISTRY=$(echo $REPOSITORY_URI | cut -d'/' -f1)",
@@ -157,8 +158,7 @@ public class QuarkusBackendContinuousIntegrationStack extends Stack {
                         "mvn install -pl :" + applicationArtifactId + " -am -T1C -B -ntp",
                         "docker images",
                         "docker push $REPOSITORY_URI:$QUARKUS_CONTAINER_IMAGE_TAG",
-                        "docker push $REPOSITORY_URI:$QUARKUS_CONTAINER_IMAGE_ADDITIONAL_TAGS"
-                ))
+                        "docker push $REPOSITORY_URI:$QUARKUS_CONTAINER_IMAGE_ADDITIONAL_TAGS"))
                 .cachePaths(List.of("/root/.m2/**/*"))
                 .build();
     }

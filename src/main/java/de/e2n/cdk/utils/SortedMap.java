@@ -8,13 +8,13 @@ import java.util.Map;
  */
 public class SortedMap {
 
-    @SuppressWarnings ("unchecked")
-    public static <K, V> Map<K,V> of(Object... keyVals) {
+    @SuppressWarnings("unchecked")
+    public static <K, V> Map<K, V> of(Object... keyVals) {
         if (keyVals.length % 2 != 0) {
             throw new IllegalArgumentException("Uneven number of arguments. Keys and values must be paired.");
         }
 
-        LinkedHashMap<K,V> map = new LinkedHashMap<>();
+        LinkedHashMap<K, V> map = new LinkedHashMap<>();
         for (int i = 0; i < keyVals.length; i += 2) {
             K key = (K) keyVals[i];
             V value = (V) keyVals[i + 1];
@@ -26,5 +26,4 @@ public class SortedMap {
 
         return map;
     }
-
 }

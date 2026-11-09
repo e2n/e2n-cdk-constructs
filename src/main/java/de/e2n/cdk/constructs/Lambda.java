@@ -2,6 +2,10 @@ package de.e2n.cdk.constructs;
 
 import de.e2n.cdk.model.DefaultLambdaConfig;
 import de.e2n.cdk.model.ILambda;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import software.amazon.awscdk.RemovalPolicy;
 import software.amazon.awscdk.services.iam.ManagedPolicy;
 import software.amazon.awscdk.services.iam.Role;
@@ -9,11 +13,6 @@ import software.amazon.awscdk.services.iam.ServicePrincipal;
 import software.amazon.awscdk.services.lambda.*;
 import software.amazon.awscdk.services.lambda.Runtime;
 import software.constructs.Construct;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 
 /**
  * Diese Klasse erzeugt mittels AWS CDK eine AWS Lambda Function.
@@ -27,9 +26,7 @@ public class Lambda extends Construct implements ILambda {
     private final Version version;
     private final Alias alias;
 
-    public Lambda(final Construct scope,
-                  final String id,
-                  DefaultLambdaConfig lambdaConfig) {
+    public Lambda(final Construct scope, final String id, DefaultLambdaConfig lambdaConfig) {
         super(scope, id);
 
         final LocalDateTime now = LocalDateTime.now();
@@ -60,7 +57,10 @@ public class Lambda extends Construct implements ILambda {
                  */
                 .description(now.truncatedTo(ChronoUnit.SECONDS).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
                 .architecture(lambdaConfig.getArchitecture())
-                .runtime(lambdaConfig.getHandlerPath().equals(Handler.FROM_IMAGE) ? Runtime.FROM_IMAGE : lambdaConfig.getRuntime())
+                .runtime(
+                        lambdaConfig.getHandlerPath().equals(Handler.FROM_IMAGE)
+                                ? Runtime.FROM_IMAGE
+                                : lambdaConfig.getRuntime())
                 .timeout(lambdaConfig.getTimeout())
                 .memorySize(lambdaConfig.getMemorySize())
                 .ephemeralStorageSize(lambdaConfig.getEphemeralStorageSize())
@@ -87,10 +87,9 @@ public class Lambda extends Construct implements ILambda {
         version = Version.Builder.create(this, "Version" + now)
                 .lambda(function)
                 .removalPolicy(RemovalPolicy.RETAIN)
-                .description(now.truncatedTo(ChronoUnit.SECONDS)
-                        .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + " Version.")
+                .description(
+                        now.truncatedTo(ChronoUnit.SECONDS).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + " Version.")
                 .build();
-
 
         if (lambdaConfig.getAlias() != null) {
             alias = Alias.Builder.create(this, "Alias")
@@ -113,5 +112,4 @@ public class Lambda extends Construct implements ILambda {
     public Alias getAlias() {
         return alias;
     }
-
 }

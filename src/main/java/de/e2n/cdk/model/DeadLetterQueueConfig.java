@@ -1,6 +1,7 @@
 package de.e2n.cdk.model;
 
 import software.amazon.awscdk.Duration;
+
 /**
  * Die Konfiguration einer AWS SQS-dead-letter-Queue. Wird per {@link Builder} initialisiert.
  */
@@ -11,7 +12,11 @@ public class DeadLetterQueueConfig {
     private final Duration receiveMessageWaitTime;
     private final Duration retentionPeriod;
 
-    public DeadLetterQueueConfig(boolean enabledDeadLetterQueue, int maximumReceives, Duration receiveMessageWaitTime, Duration retentionPeriod) {
+    public DeadLetterQueueConfig(
+            boolean enabledDeadLetterQueue,
+            int maximumReceives,
+            Duration receiveMessageWaitTime,
+            Duration retentionPeriod) {
         this.enabledDeadLetterQueue = enabledDeadLetterQueue;
         this.maximumReceives = maximumReceives;
         this.receiveMessageWaitTime = receiveMessageWaitTime;
@@ -44,8 +49,7 @@ public class DeadLetterQueueConfig {
         private Duration receiveMessageWaitTime = Duration.seconds(20);
         private Duration retentionPeriod = Duration.days(14);
 
-        private Builder() {
-        }
+        private Builder() {}
 
         /**
          * Deaktiviert die DeadLetterQueue
@@ -94,7 +98,6 @@ public class DeadLetterQueueConfig {
             return this;
         }
 
-
         private int validateRange(int value, int min, int max) {
             if (value > max) return max;
             if (value < min) return min;
@@ -114,14 +117,11 @@ public class DeadLetterQueueConfig {
             return new Builder();
         }
 
-
         /**
          * @return {@link DeadLetterQueueConfig}
          */
         public DeadLetterQueueConfig build() {
             return new DeadLetterQueueConfig(enabled, maximumReceives, receiveMessageWaitTime, retentionPeriod);
         }
-
     }
-
 }

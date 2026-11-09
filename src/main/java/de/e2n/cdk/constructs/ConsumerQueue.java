@@ -26,10 +26,7 @@ public class ConsumerQueue extends Construct {
     private final Queue queue;
     private final ILambda consumer;
 
-    public ConsumerQueue(final Construct scope,
-                         final String id,
-                         ILambda consumer,
-                         QueueConfig queueConfig) {
+    public ConsumerQueue(final Construct scope, final String id, ILambda consumer, QueueConfig queueConfig) {
         super(scope, id);
         this.consumer = consumer;
 
@@ -41,7 +38,8 @@ public class ConsumerQueue extends Construct {
 
         // https://github.com/aws/aws-cdk/issues/8550
         if (queueConfig.isFifo()) {
-            queueBuilder.fifo(queueConfig.isFifo())
+            queueBuilder
+                    .fifo(queueConfig.isFifo())
                     .contentBasedDeduplication(queueConfig.isContentBasedDeduplication());
         }
 
@@ -57,12 +55,14 @@ public class ConsumerQueue extends Construct {
                     .retentionPeriod(deadLetterQueueConfig.getRetentionPeriod());
 
             if (queueConfig.isFifo()) {
-                deadletterQueueBuilder.fifo(queueConfig.isFifo())
+                deadletterQueueBuilder
+                        .fifo(queueConfig.isFifo())
                         .contentBasedDeduplication(queueConfig.isContentBasedDeduplication());
             }
 
             var deadletterQueue = deadletterQueueBuilder.build();
-            queue = queueBuilder.deadLetterQueue(DeadLetterQueue.builder()
+            queue = queueBuilder
+                    .deadLetterQueue(DeadLetterQueue.builder()
                             .queue(deadletterQueue)
                             .maxReceiveCount(deadLetterQueueConfig.getMaximumReceives())
                             .build())
@@ -70,7 +70,6 @@ public class ConsumerQueue extends Construct {
         } else {
             queue = queueBuilder.build();
         }
-
 
         queue.grantConsumeMessages(this.consumer.getAlias());
 
@@ -80,8 +79,8 @@ public class ConsumerQueue extends Construct {
         //                                           .build());
 
         // Workaround for https://github.com/aws/serverless-application-model/issues/1320
-        CfnEventSourceMapping cfnEventSourceMapping = CfnEventSourceMapping.Builder
-                .create(this, "CfnEventSourceMapping")
+        CfnEventSourceMapping cfnEventSourceMapping = CfnEventSourceMapping.Builder.create(
+                        this, "CfnEventSourceMapping")
                 .functionName(this.consumer.getAlias().getFunctionName())
                 .batchSize(queueConfig.getBatchSize())
                 .eventSourceArn(queue.getQueueArn())
@@ -95,6 +94,4 @@ public class ConsumerQueue extends Construct {
     public ILambda getConsumer() {
         return consumer;
     }
-
 }
-

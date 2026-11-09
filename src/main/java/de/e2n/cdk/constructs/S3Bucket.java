@@ -17,9 +17,7 @@ public class S3Bucket extends Construct {
 
     private final Bucket bucket;
 
-    public S3Bucket(final Construct scope,
-                    final String id,
-                    final S3BucketConfig config) {
+    public S3Bucket(final Construct scope, final String id, final S3BucketConfig config) {
         super(scope, id);
 
         Bucket.Builder bucketBuilder = Bucket.Builder.create(this, "Bucket")
@@ -64,5 +62,4 @@ public class S3Bucket extends Construct {
     public Bucket getBucket() {
         return bucket;
     }
-
 }

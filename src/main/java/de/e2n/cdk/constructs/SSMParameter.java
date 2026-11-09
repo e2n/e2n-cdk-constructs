@@ -25,5 +25,4 @@ public class SSMParameter {
     public String getRegion() {
         return region;
     }
-
 }

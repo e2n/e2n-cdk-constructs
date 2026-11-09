@@ -1,7 +1,6 @@
 package de.e2n.cdk.model;
 
 import de.e2n.cdk.utils.SortedMap;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +15,7 @@ import java.util.Map;
  */
 public final class BuildSpec {
 
-    private BuildSpec() {
-    }
+    private BuildSpec() {}
 
     public static Builder builder() {
         return new Builder();
@@ -97,23 +95,16 @@ public final class BuildSpec {
          * @return {@link software.amazon.awscdk.services.codebuild.BuildSpec}
          */
         public software.amazon.awscdk.services.codebuild.BuildSpec build() {
-            return software.amazon.awscdk.services.codebuild.BuildSpec.fromObject(
-                    SortedMap.of(
-                            "version", version.value(),
-                            "phases", SortedMap.of(
-                                    "install", SortedMap.of(
-                                            "runtime-versions", runtimeVersions,
-                                            "commands", installCommands
-                                    ),
-                                    "build", SortedMap.of(
-                                            "commands", buildCommands
-                                    )
-                            ),
-                            "cache", SortedMap.of(
-                                    "paths", cachePaths
-                            )
-                    )
-            );
+            return software.amazon.awscdk.services.codebuild.BuildSpec.fromObject(SortedMap.of(
+                    "version", version.value(),
+                    "phases",
+                            SortedMap.of(
+                                    "install",
+                                            SortedMap.of(
+                                                    "runtime-versions", runtimeVersions,
+                                                    "commands", installCommands),
+                                    "build", SortedMap.of("commands", buildCommands)),
+                    "cache", SortedMap.of("paths", cachePaths)));
         }
     }
 }

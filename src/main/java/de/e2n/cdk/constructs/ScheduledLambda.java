@@ -1,13 +1,12 @@
 package de.e2n.cdk.constructs;
 
 import de.e2n.cdk.model.ILambda;
-import software.constructs.Construct;
+import java.util.Arrays;
+import java.util.List;
 import software.amazon.awscdk.services.events.Rule;
 import software.amazon.awscdk.services.events.Schedule;
 import software.amazon.awscdk.services.events.targets.LambdaFunction;
-
-import java.util.Arrays;
-import java.util.List;
+import software.constructs.Construct;
 
 /**
  * Diese Klasse erzeugt mittels AWS CDK eine Schedule getriggerte Lambda.
@@ -20,17 +19,11 @@ public class ScheduledLambda extends Construct {
 
     private final ILambda lambda;
 
-    public ScheduledLambda(final Construct scope,
-                           final String id,
-                           ILambda lambda,
-                           Schedule schedule) {
+    public ScheduledLambda(final Construct scope, final String id, ILambda lambda, Schedule schedule) {
         this(scope, id, lambda, List.of(schedule));
     }
 
-    public ScheduledLambda(final Construct scope,
-                           final String id,
-                           ILambda lambda,
-                           List<Schedule> schedules) {
+    public ScheduledLambda(final Construct scope, final String id, ILambda lambda, List<Schedule> schedules) {
         super(scope, id);
 
         this.lambda = lambda;
@@ -47,5 +40,4 @@ public class ScheduledLambda extends Construct {
     public ILambda getLambda() {
         return lambda;
     }
-
 }

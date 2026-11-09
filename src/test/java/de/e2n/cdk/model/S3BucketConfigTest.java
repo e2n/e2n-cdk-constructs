@@ -1,15 +1,15 @@
 package de.e2n.cdk.model;
 
-import org.junit.jupiter.api.Test;
-import software.amazon.awscdk.RemovalPolicy;
-import software.amazon.awscdk.services.s3.BlockPublicAccess;
-import software.amazon.awscdk.services.s3.BucketEncryption;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+import software.amazon.awscdk.RemovalPolicy;
+import software.amazon.awscdk.services.s3.BlockPublicAccess;
+import software.amazon.awscdk.services.s3.BucketEncryption;
 
 class S3BucketConfigTest {
 
@@ -68,9 +68,9 @@ class S3BucketConfigTest {
 
     @Test
     void autoDeleteObjectsOhneRemovalPolicyDestroyWirftException() {
-        assertThrows(IllegalArgumentException.class, () -> S3BucketConfig.Builder.create()
-                .autoDeleteObjects(true)
-                .build());
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> S3BucketConfig.Builder.create().autoDeleteObjects(true).build());
     }
 
     @Test
@@ -83,5 +83,4 @@ class S3BucketConfigTest {
         assertTrue(config.isAutoDeleteObjects());
         assertEquals(RemovalPolicy.DESTROY, config.getRemovalPolicy());
     }
-
 }

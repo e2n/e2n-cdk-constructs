@@ -1,6 +1,8 @@
 package de.e2n.cdk.stacks;
 
 import de.e2n.cdk.utils.SortedMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
 import software.amazon.awscdk.services.codebuild.BuildEnvironment;
@@ -20,9 +22,6 @@ import software.amazon.awscdk.services.ecs.FargateService;
 import software.amazon.awscdk.services.ecs.FargateTaskDefinition;
 import software.constructs.Construct;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-
 /**
  * The {@code CICDStack} creates a CodePipeline. Every commit to ECR deploys to ECS.
  */
@@ -31,14 +30,15 @@ public class EcsContainerContinuousDeliveryStack extends Stack {
     private final String name;
     private final String imageTag;
 
-    public EcsContainerContinuousDeliveryStack(Construct scope,
-                                               String id,
-                                               StackProps props,
-                                               String name,
-                                               IRepository repository,
-                                               FargateService fargateService,
-                                               FargateTaskDefinition fargateTaskDefinition,
-                                               String imageTag) {
+    public EcsContainerContinuousDeliveryStack(
+            Construct scope,
+            String id,
+            StackProps props,
+            String name,
+            IRepository repository,
+            FargateService fargateService,
+            FargateTaskDefinition fargateTaskDefinition,
+            String imageTag) {
         super(scope, id, props);
 
         this.name = name;
@@ -77,16 +77,17 @@ public class EcsContainerContinuousDeliveryStack extends Stack {
      * This is unfortunate, but needed. There is no shortcut.
      */
     StageProps buildStage(IRepository repository, FargateTaskDefinition fargateTaskDefinition) {
-        var buildSpec = BuildSpec.fromObject(
-                new LinkedHashMap<>(
-                        SortedMap.of("version", "0.2",
-                                     "phases", SortedMap.of("build",
-                                                            SortedMap.of("commands",
-                                                                         List.of("echo \"[{ \\\"name\\\": \\\"$CONTAINER_NAME\\\", \\\"imageUri\\\": \\\"$REPOSITORY_URI\\\" }]\" > imagedefinitions.json",
-                                                       "cat imagedefinitions.json"))),
-                                     "artifacts", SortedMap.of("files", List.of("imagedefinitions.json"))
-                ))
-        );
+        var buildSpec = BuildSpec.fromObject(new LinkedHashMap<>(SortedMap.of(
+                "version", "0.2",
+                "phases",
+                        SortedMap.of(
+                                "build",
+                                SortedMap.of(
+                                        "commands",
+                                        List.of(
+                                                "echo \"[{ \\\"name\\\": \\\"$CONTAINER_NAME\\\", \\\"imageUri\\\": \\\"$REPOSITORY_URI\\\" }]\" > imagedefinitions.json",
+                                                "cat imagedefinitions.json"))),
+                "artifacts", SortedMap.of("files", List.of("imagedefinitions.json")))));
 
         // By the power of Graviton! [optional]
         var environment = BuildEnvironment.builder()
@@ -98,13 +99,16 @@ public class EcsContainerContinuousDeliveryStack extends Stack {
                 .buildSpec(buildSpec)
                 .environment(environment)
                 .environmentVariables(SortedMap.of(
-                        "CONTAINER_NAME", BuildEnvironmentVariable.builder()
-                                .value(fargateTaskDefinition.getDefaultContainer().getContainerName())
-                                .build(),
-                        "REPOSITORY_URI", BuildEnvironmentVariable.builder()
-                                .value(repository.getRepositoryUri() + ":" + imageTag)
-                                .build()
-                ))
+                        "CONTAINER_NAME",
+                                BuildEnvironmentVariable.builder()
+                                        .value(fargateTaskDefinition
+                                                .getDefaultContainer()
+                                                .getContainerName())
+                                        .build(),
+                        "REPOSITORY_URI",
+                                BuildEnvironmentVariable.builder()
+                                        .value(repository.getRepositoryUri() + ":" + imageTag)
+                                        .build()))
                 .build();
 
         var buildAction = CodeBuildAction.Builder.create()
@@ -135,6 +139,4 @@ public class EcsContainerContinuousDeliveryStack extends Stack {
                 .actions(List.of(deployAction))
                 .build();
     }
-
-
 }

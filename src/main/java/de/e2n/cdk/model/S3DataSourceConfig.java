@@ -1,10 +1,9 @@
 package de.e2n.cdk.model;
 
+import java.util.List;
 import software.amazon.awscdk.services.bedrock.CfnDataSource.ServerSideEncryptionConfigurationProperty;
 import software.amazon.awscdk.services.bedrock.CfnDataSource.VectorIngestionConfigurationProperty;
 import software.amazon.awscdk.services.s3.IBucket;
-
-import java.util.List;
 
 /**
  * The configuration of an S3 data source for a Bedrock Knowledge Base. Initialized via {@link Builder}.
@@ -21,12 +20,13 @@ public class S3DataSourceConfig {
     private final ServerSideEncryptionConfigurationProperty serverSideEncryptionConfiguration;
     private final VectorIngestionConfigurationProperty vectorIngestionConfiguration;
 
-    public S3DataSourceConfig(String name,
-                              IBucket bucket,
-                              List<String> inclusionPrefixes,
-                              String description,
-                              ServerSideEncryptionConfigurationProperty serverSideEncryptionConfiguration,
-                              VectorIngestionConfigurationProperty vectorIngestionConfiguration) {
+    public S3DataSourceConfig(
+            String name,
+            IBucket bucket,
+            List<String> inclusionPrefixes,
+            String description,
+            ServerSideEncryptionConfigurationProperty serverSideEncryptionConfiguration,
+            VectorIngestionConfigurationProperty vectorIngestionConfiguration) {
         this.name = name;
         this.bucket = bucket;
         this.inclusionPrefixes = inclusionPrefixes;
@@ -71,8 +71,7 @@ public class S3DataSourceConfig {
         private ServerSideEncryptionConfigurationProperty serverSideEncryptionConfiguration;
         private VectorIngestionConfigurationProperty vectorIngestionConfiguration;
 
-        private Builder() {
-        }
+        private Builder() {}
 
         /**
          * @return {@link Builder} a new builder.
@@ -128,7 +127,8 @@ public class S3DataSourceConfig {
          * @param serverSideEncryptionConfiguration The encryption configuration of the data source.
          * @return {@link Builder}
          */
-        public Builder serverSideEncryptionConfiguration(ServerSideEncryptionConfigurationProperty serverSideEncryptionConfiguration) {
+        public Builder serverSideEncryptionConfiguration(
+                ServerSideEncryptionConfigurationProperty serverSideEncryptionConfiguration) {
             this.serverSideEncryptionConfiguration = serverSideEncryptionConfiguration;
             return this;
         }
@@ -167,8 +167,7 @@ public class S3DataSourceConfig {
                     inclusionPrefixes,
                     description,
                     serverSideEncryptionConfiguration,
-                    vectorIngestionConfiguration
-            );
+                    vectorIngestionConfiguration);
         }
     }
 }

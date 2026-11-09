@@ -1,14 +1,13 @@
 package de.e2n.cdk.constructs;
 
-import software.amazon.awscdk.services.ec2.CfnRoute;
-import software.amazon.awscdk.services.ec2.ISubnet;
-import software.constructs.Construct;
-
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import software.amazon.awscdk.services.ec2.CfnRoute;
+import software.amazon.awscdk.services.ec2.ISubnet;
+import software.constructs.Construct;
 
 /**
  * Creates routes in each given route table to each given destination cidr block.
@@ -26,7 +25,8 @@ public class VpcPeeringRouting extends Construct {
         int i = 0;
         for (var routeTableId : props.routeTableIds) {
             for (var destinationCidrBlock : props.destinationCidrBlocks) {
-                CfnRoute route = CfnRoute.Builder.create(this, props.routeName + "-" + (i++) + "-VpcPeeringConnectionRoute")
+                CfnRoute route = CfnRoute.Builder.create(
+                                this, props.routeName + "-" + (i++) + "-VpcPeeringConnectionRoute")
                         .routeTableId(routeTableId)
                         .destinationCidrBlock(destinationCidrBlock)
                         .vpcPeeringConnectionId(props.vpcPeeringConnectionId)
@@ -46,16 +46,16 @@ public class VpcPeeringRouting extends Construct {
         Set<String> routeTableIds;
         Set<String> destinationCidrBlocks;
 
-        public Props(String routeName,
-                     String vpcPeeringConnectionId,
-                     Set<String> routeTableIds,
-                     Set<String> destinationCidrBlocks) {
+        public Props(
+                String routeName,
+                String vpcPeeringConnectionId,
+                Set<String> routeTableIds,
+                Set<String> destinationCidrBlocks) {
             this.routeName = routeName;
             this.vpcPeeringConnectionId = vpcPeeringConnectionId;
             this.routeTableIds = routeTableIds;
             this.destinationCidrBlocks = destinationCidrBlocks;
         }
-
     }
 
     public static Set<String> getRouteTableIds(List<ISubnet> subnets) {
@@ -63,5 +63,4 @@ public class VpcPeeringRouting extends Construct {
                 .map(subnet -> subnet.getRouteTable().getRouteTableId())
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
-
 }

@@ -1,14 +1,13 @@
 package de.e2n.cdk.constructs;
 
 import de.e2n.cdk.utils.SortedMap;
+import java.util.List;
 import software.amazon.awscdk.PhysicalName;
 import software.amazon.awscdk.services.iam.AccountPrincipal;
 import software.amazon.awscdk.services.iam.PolicyDocument;
 import software.amazon.awscdk.services.iam.PolicyStatement;
 import software.amazon.awscdk.services.iam.Role;
 import software.constructs.Construct;
-
-import java.util.List;
 
 /**
  * Creates a IAM role dedicated to accepting a vpc peering connection request from given requester.
@@ -26,21 +25,28 @@ public class VpcPeeringAccepter extends Construct {
     public VpcPeeringAccepter(Construct scope, String id, Props props) {
         super(scope, id);
 
-        var accepterPolicy = PolicyDocument.Builder
-                .create()
+        var accepterPolicy = PolicyDocument.Builder.create()
                 .statements(List.of(
                         PolicyStatement.Builder.create()
                                 .actions(List.of("ec2:AcceptVpcPeeringConnection"))
-                                .resources(List.of("arn:aws:ec2:" + props.accepterRegion + ":" + props.accepterAwsAccountId + ":vpc/" + props.accepterVpcId))
+                                .resources(List.of("arn:aws:ec2:" + props.accepterRegion + ":"
+                                        + props.accepterAwsAccountId + ":vpc/" + props.accepterVpcId))
                                 .build(),
                         PolicyStatement.Builder.create()
                                 .actions(List.of("ec2:AcceptVpcPeeringConnection"))
-                                .conditions(SortedMap.of("StringEquals", SortedMap.of("ec2:AccepterVpc", "arn:aws:ec2:" + props.accepterRegion + ":" + props.accepterAwsAccountId + ":vpc/" + props.accepterVpcId)))
-                                .resources(List.of("arn:aws:ec2:" + props.accepterRegion + ":" + props. accepterAwsAccountId + ":vpc-peering-connection/*"))
+                                .conditions(SortedMap.of(
+                                        "StringEquals",
+                                        SortedMap.of(
+                                                "ec2:AccepterVpc",
+                                                "arn:aws:ec2:" + props.accepterRegion + ":" + props.accepterAwsAccountId
+                                                        + ":vpc/" + props.accepterVpcId)))
+                                .resources(List.of("arn:aws:ec2:" + props.accepterRegion + ":"
+                                        + props.accepterAwsAccountId + ":vpc-peering-connection/*"))
                                 .build()))
                 .build();
         accepterRole = Role.Builder.create(this, "VpcPeeringConnectionAccepterRole")
-                //  in a cross-environment fashion, the resource's physical name must be explicit set or use `PhysicalName.GENERATE_IF_NEEDED`
+                //  in a cross-environment fashion, the resource's physical name must be explicit set or use
+                // `PhysicalName.GENERATE_IF_NEEDED`
                 // https://stackoverflow.com/a/63165557
                 .roleName(PhysicalName.GENERATE_IF_NEEDED)
                 .assumedBy(new AccountPrincipal(props.requesterAwsAccountId))
@@ -61,17 +67,16 @@ public class VpcPeeringAccepter extends Construct {
         String accepterAwsAccountId;
         String accepterRegion;
 
-        public Props(String requesterAwsAccountId,
-                     String accepterVpcId,
-                     String accepterAwsAccountId,
-                     String accepterRegion) {
+        public Props(
+                String requesterAwsAccountId,
+                String accepterVpcId,
+                String accepterAwsAccountId,
+                String accepterRegion) {
             super();
             this.requesterAwsAccountId = requesterAwsAccountId;
             this.accepterVpcId = accepterVpcId;
             this.accepterAwsAccountId = accepterAwsAccountId;
             this.accepterRegion = accepterRegion;
         }
-
     }
-
 }

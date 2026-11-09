@@ -1,5 +1,6 @@
 package de.e2n.cdk.constructs;
 
+import java.util.List;
 import software.amazon.awscdk.services.certificatemanager.Certificate;
 import software.amazon.awscdk.services.ecs.Cluster;
 import software.amazon.awscdk.services.ecs.ContainerDefinitionOptions;
@@ -14,8 +15,6 @@ import software.amazon.awscdk.services.iam.Role;
 import software.amazon.awscdk.services.iam.ServicePrincipal;
 import software.constructs.Construct;
 
-import java.util.List;
-
 public class EcsService {
 
     public static FargateTaskDefinition fargateTaskDefinition(Construct scope, TaskDefinitionProps props) {
@@ -26,7 +25,8 @@ public class EcsService {
 
         // Task Execution Role to pull images from ECR
         var taskExecutionRole = Role.Builder.create(scope, props.id + "-taskExecutionRole")
-                .managedPolicies(List.of(ManagedPolicy.fromAwsManagedPolicyName("service-role/AmazonECSTaskExecutionRolePolicy")))
+                .managedPolicies(List.of(
+                        ManagedPolicy.fromAwsManagedPolicyName("service-role/AmazonECSTaskExecutionRolePolicy")))
                 .assumedBy(new ServicePrincipal("ecs-tasks.amazonaws.com"))
                 .build();
 
@@ -55,11 +55,12 @@ public class EcsService {
         private final Number memory;
         private final List<ContainerDefinitionOptions> containerDefinitionOptions;
 
-        public TaskDefinitionProps(String id,
-                                   IRole taskRole,
-                                   Number cpu,
-                                   Number memory,
-                                   List<ContainerDefinitionOptions> containerDefinitionOptions) {
+        public TaskDefinitionProps(
+                String id,
+                IRole taskRole,
+                Number cpu,
+                Number memory,
+                List<ContainerDefinitionOptions> containerDefinitionOptions) {
             this.id = id;
             this.taskRole = taskRole;
             this.cpu = cpu;
@@ -86,7 +87,6 @@ public class EcsService {
         public List<ContainerDefinitionOptions> getContainerDefinitionOptions() {
             return containerDefinitionOptions;
         }
-
     }
 
     public static class ServiceProps {
@@ -95,17 +95,18 @@ public class EcsService {
         private final ApplicationLoadBalancer loadBalancer;
         private final Certificate certificate;
         private final Cluster fargateCluster;
-        private final  int loadBalancerPort;
-        private final  int targetGroupPort;
-        private final  String healthCheckPath;
+        private final int loadBalancerPort;
+        private final int targetGroupPort;
+        private final String healthCheckPath;
 
-        public ServiceProps(String id,
-                            ApplicationLoadBalancer loadBalancer,
-                            Certificate certificate,
-                            Cluster fargateCluster,
-                            int loadBalancerPort,
-                            int targetGroupPort,
-                            String healthCheckPath) {
+        public ServiceProps(
+                String id,
+                ApplicationLoadBalancer loadBalancer,
+                Certificate certificate,
+                Cluster fargateCluster,
+                int loadBalancerPort,
+                int targetGroupPort,
+                String healthCheckPath) {
             this.id = id;
             this.loadBalancer = loadBalancer;
             this.certificate = certificate;
@@ -142,7 +143,5 @@ public class EcsService {
         public String getHealthCheckPath() {
             return healthCheckPath;
         }
-
     }
-
 }

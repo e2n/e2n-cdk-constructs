@@ -1,6 +1,7 @@
 package de.e2n.cdk.stacks;
 
 import de.e2n.cdk.utils.SortedMap;
+import java.util.List;
 import software.amazon.awscdk.PhysicalName;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
@@ -13,16 +14,11 @@ import software.amazon.awscdk.services.events.targets.CloudWatchLogGroup;
 import software.amazon.awscdk.services.logs.LogGroup;
 import software.constructs.Construct;
 
-import java.util.List;
-
 public class LandingZoneEventBusStack extends Stack {
 
     EventBus eventBus;
 
-    public LandingZoneEventBusStack(Construct scope,
-                                    String id,
-                                    StackProps props,
-                                    String crossAccountAccessAccountId) {
+    public LandingZoneEventBusStack(Construct scope, String id, StackProps props, String crossAccountAccessAccountId) {
         super(scope, id, props);
 
         this.eventBus = EventBus.Builder.create(this, "EventBus")
@@ -40,17 +36,16 @@ public class LandingZoneEventBusStack extends Stack {
         var eventBusLogGroup = LogGroup.Builder.create(this, "EventBusLogGroup").build();
         var logRule = Rule.Builder.create(this, "LogRule")
                 .eventBus(eventBus)
-                .eventPattern(EventPattern.builder()
-                                      .source(List.of())
-                                      .build())
-                .targets(List.of(CloudWatchLogGroup.Builder.create(eventBusLogGroup).build()))
+                .eventPattern(EventPattern.builder().source(List.of()).build())
+                .targets(List.of(
+                        CloudWatchLogGroup.Builder.create(eventBusLogGroup).build()))
                 .build();
         // Workaround https://github.com/aws/aws-cdk/issues/20486
-        ((CfnRule) logRule.getNode().getDefaultChild()).setEventPattern(SortedMap.of("source", List.of(SortedMap.of("exists", true))));
+        ((CfnRule) logRule.getNode().getDefaultChild())
+                .setEventPattern(SortedMap.of("source", List.of(SortedMap.of("exists", true))));
     }
 
     public EventBus getEventBus() {
         return eventBus;
     }
-
 }

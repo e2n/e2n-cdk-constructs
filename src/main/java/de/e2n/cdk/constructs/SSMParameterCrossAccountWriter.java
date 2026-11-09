@@ -11,15 +11,17 @@ public class SSMParameterCrossAccountWriter extends Construct {
 
     private final SSMParameter ssmParameter;
 
-    public SSMParameterCrossAccountWriter(Construct scope,
-                                          String id,
-                                          String parameterName,
-                                          String parameterValue,
-                                          String region,
-                                          PrincipalBase crossAccountSsmReaderRolePrincipal) {
+    public SSMParameterCrossAccountWriter(
+            Construct scope,
+            String id,
+            String parameterName,
+            String parameterValue,
+            String region,
+            PrincipalBase crossAccountSsmReaderRolePrincipal) {
         super(scope, id);
 
-        // its not possible to share refs or resources cross stack + cross account. We do it with SSM and a custom resource.
+        // its not possible to share refs or resources cross stack + cross account. We do it with SSM and a custom
+        // resource.
         var ssmParameter = StringParameter.Builder.create(this, "SsmParameter")
                 .parameterName(parameterName)
                 .tier(ParameterTier.STANDARD)
@@ -35,13 +37,11 @@ public class SSMParameterCrossAccountWriter extends Construct {
                 .build();
         ssmParameter.grantRead(crossAccountSsmParameterReaderRole);
 
-        this.ssmParameter = new SSMParameter(ssmParameter.getParameterName(),
-                                             crossAccountSsmParameterReaderRole,
-                                             region);
+        this.ssmParameter =
+                new SSMParameter(ssmParameter.getParameterName(), crossAccountSsmParameterReaderRole, region);
     }
 
     public SSMParameter getSsmParameter() {
         return ssmParameter;
     }
-
 }

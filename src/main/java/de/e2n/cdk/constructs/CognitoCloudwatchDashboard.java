@@ -1,27 +1,27 @@
 package de.e2n.cdk.constructs;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 import software.amazon.awscdk.Duration;
 import software.amazon.awscdk.services.cloudwatch.*;
 import software.constructs.Construct;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class CognitoCloudwatchDashboard extends Construct {
 
     private final Dashboard dashboard;
     private final List<MathExpression> serviceQuotaUtilizationMetrics;
 
-    public CognitoCloudwatchDashboard(final Construct scope,
-                                      final String id,
-                                      String dashboardName,
-                                      String userPoolId,
-                                      String userPoolClientId,
-                                      String idpProviderName,
-                                      String namespace,
-                                      @Nullable TextWidget infoTextWidget) {
+    public CognitoCloudwatchDashboard(
+            final Construct scope,
+            final String id,
+            String dashboardName,
+            String userPoolId,
+            String userPoolClientId,
+            String idpProviderName,
+            String namespace,
+            @Nullable TextWidget infoTextWidget) {
         super(scope, id);
 
         // https://docs.aws.amazon.com/cognito/latest/developerguide/metrics-for-cognito-user-pools.html
@@ -101,36 +101,39 @@ public class CognitoCloudwatchDashboard extends Construct {
                     .metricName("FederationThrottles")
                     .namespace("AWS/Cognito")
                     .statistic("Sum")
-                    .dimensionsMap(Map.of("UserPool",
-                                                userPoolId,
-                                                "UserPoolClient",
-                                                userPoolClientId,
-                                                "IdentityProvider",
-                                                idpProviderName))
+                    .dimensionsMap(Map.of(
+                            "UserPool",
+                            userPoolId,
+                            "UserPoolClient",
+                            userPoolClientId,
+                            "IdentityProvider",
+                            idpProviderName))
                     .label("Throttled Federations")
                     .build();
             var federationSuccesses = Metric.Builder.create()
                     .metricName("FederationSuccesses")
                     .namespace("AWS/Cognito")
                     .statistic("Sum")
-                    .dimensionsMap(Map.of("UserPool",
-                                                userPoolId,
-                                                "UserPoolClient",
-                                                userPoolClientId,
-                                                "IdentityProvider",
-                                                idpProviderName))
+                    .dimensionsMap(Map.of(
+                            "UserPool",
+                            userPoolId,
+                            "UserPoolClient",
+                            userPoolClientId,
+                            "IdentityProvider",
+                            idpProviderName))
                     .label("Successful Federations")
                     .build();
             var federationTotal = Metric.Builder.create()
                     .metricName("FederationSuccesses")
                     .namespace("AWS/Cognito")
                     .statistic("SampleCount")
-                    .dimensionsMap(Map.of("UserPool",
-                                                userPoolId,
-                                                "UserPoolClient",
-                                                userPoolClientId,
-                                                "IdentityProvider",
-                                                idpProviderName))
+                    .dimensionsMap(Map.of(
+                            "UserPool",
+                            userPoolId,
+                            "UserPoolClient",
+                            userPoolClientId,
+                            "IdentityProvider",
+                            idpProviderName))
                     .label("Total Federations")
                     .build();
             var federationFailures = MathExpression.Builder.create()
@@ -149,42 +152,38 @@ public class CognitoCloudwatchDashboard extends Construct {
 
         // % Utilization of service quotas
         // https://docs.aws.amazon.com/cognito/latest/developerguide/limits.html#category_operations
-        List<String> serviceQuotaCategories = List.of("UserAuthentication",
-                                                      "UserToken",
-                                                      "UserFederation",
-                                                      "UserCreation",
-                                                      "UserUpdate",
-                                                      "UserRead",
-                                                      "UserResourceRead",
-                                                      "UserResourceUpdate",
-                                                      "UserAccountRecovery"); // ClientAuthentication data points missing
+        List<String> serviceQuotaCategories = List.of(
+                "UserAuthentication",
+                "UserToken",
+                "UserFederation",
+                "UserCreation",
+                "UserUpdate",
+                "UserRead",
+                "UserResourceRead",
+                "UserResourceUpdate",
+                "UserAccountRecovery"); // ClientAuthentication data points missing
         serviceQuotaUtilizationMetrics = new ArrayList<>();
 
         for (String category : serviceQuotaCategories) {
             Metric callCount = Metric.Builder.create()
                     .metricName("CallCount")
                     .namespace("AWS/Usage")
-                    .dimensionsMap(Map.of("Service",
-                                                "Cognito User Pool",
-                                                "Resource",
-                                                category,
-                                                "Class",
-                                                "None",
-                                                "Type",
-                                                "API"))
+                    .dimensionsMap(Map.of(
+                            "Service", "Cognito User Pool", "Resource", category, "Class", "None", "Type", "API"))
                     .statistic("SampleCount")
                     .period(Duration.minutes(1))
                     .build();
             MathExpression utilization = MathExpression.Builder.create()
                     .expression("(usage_data_" + category + "/SERVICE_QUOTA(usage_data_" + category + "))*100")
                     .label(category)
-                    .usingMetrics(Map.of("usage_data_" + category,
-                                               callCount,
-                                               "info_" + category,
-                                               Metric.Builder.create()
-                                                       .metricName("info_" + category)
-                                                       .namespace(namespace)
-                                                       .build()))
+                    .usingMetrics(Map.of(
+                            "usage_data_" + category,
+                            callCount,
+                            "info_" + category,
+                            Metric.Builder.create()
+                                    .metricName("info_" + category)
+                                    .namespace(namespace)
+                                    .build()))
                     .period(Duration.minutes(1))
                     .build();
             serviceQuotaUtilizationMetrics.add(utilization);
@@ -214,7 +213,6 @@ public class CognitoCloudwatchDashboard extends Construct {
                 .defaultInterval(Duration.hours(3))
                 .widgets(widgets)
                 .build();
-
     }
 
     public Dashboard getDashboard() {
@@ -224,5 +222,4 @@ public class CognitoCloudwatchDashboard extends Construct {
     public List<MathExpression> getServiceQuotaUtilizationMetrics() {
         return serviceQuotaUtilizationMetrics;
     }
-
 }

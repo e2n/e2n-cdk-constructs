@@ -12,10 +12,8 @@ public class VpcPeeringAccepterStack extends Stack {
 
     private final VpcPeeringAccepter vpcPeeringAccepter;
 
-    public VpcPeeringAccepterStack(Construct scope,
-                                   String id,
-                                   StackProps props,
-                                   VpcPeeringAccepter.Props vpcPeeringAccepterProps) {
+    public VpcPeeringAccepterStack(
+            Construct scope, String id, StackProps props, VpcPeeringAccepter.Props vpcPeeringAccepterProps) {
         super(scope, id, props);
         this.vpcPeeringAccepter = new VpcPeeringAccepter(this, "VpcPeeringAccepter", vpcPeeringAccepterProps);
     }
@@ -23,5 +21,4 @@ public class VpcPeeringAccepterStack extends Stack {
     public VpcPeeringAccepter getVpcPeeringAccepter() {
         return vpcPeeringAccepter;
     }
-
 }

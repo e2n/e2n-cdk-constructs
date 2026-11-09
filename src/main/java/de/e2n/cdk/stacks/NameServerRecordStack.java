@@ -14,29 +14,29 @@ public class NameServerRecordStack extends Stack {
 
     private final NsRecord nsRecord;
 
-    public NameServerRecordStack(Construct scope,
-                                 String id,
-                                 StackProps props,
-                                 String hostedZoneId,
-                                 String subdomain,
-                                 SSMParameter nameServerParameter) {
+    public NameServerRecordStack(
+            Construct scope,
+            String id,
+            StackProps props,
+            String hostedZoneId,
+            String subdomain,
+            SSMParameter nameServerParameter) {
         super(scope, id, props);
-        var nameServerParameterReader = new SSMParameterReader(
-                this,
-                "SSMParameterReader",
-                nameServerParameter);
+        var nameServerParameterReader = new SSMParameterReader(this, "SSMParameterReader", nameServerParameter);
         var hostedZone = HostedZone.fromHostedZoneId(this, "HostedZone", hostedZoneId);
         var nameServers = Fn.split("\n", nameServerParameterReader.getParameterValue());
-        nsRecord = new NsRecord(this, "NsRecord", NsRecordProps.builder()
-                .zone(hostedZone)
-                .comment("created with CDK in " + getStackId())
-                .recordName(subdomain)
-                .values(nameServers)
-                .build());
+        nsRecord = new NsRecord(
+                this,
+                "NsRecord",
+                NsRecordProps.builder()
+                        .zone(hostedZone)
+                        .comment("created with CDK in " + getStackId())
+                        .recordName(subdomain)
+                        .values(nameServers)
+                        .build());
     }
 
     public NsRecord getNsRecord() {
         return nsRecord;
     }
-
 }

@@ -2,10 +2,9 @@ package de.e2n.cdk.constructs;
 
 import de.e2n.cdk.model.ILambda;
 import de.e2n.cdk.model.QueueConfig;
-import software.constructs.Construct;
-import software.amazon.awscdk.services.events.Schedule;
-
 import java.util.List;
+import software.amazon.awscdk.services.events.Schedule;
+import software.constructs.Construct;
 
 /**
  * Diese Klasse konstruiert mittels AWS CDK eine Schedule getriggerte Producer-Lambda, SQS-Queue
@@ -25,37 +24,33 @@ public class ScheduledProducerConsumerQueue extends Construct {
     private final ScheduledLambda producer;
     private final ConsumerQueue consumerQueue;
 
-    public ScheduledProducerConsumerQueue(final Construct scope,
-                                          final String id,
-                                          Schedule schedule,
-                                          ILambda producer,
-                                          ILambda consumer,
-                                          QueueConfig queueConfig) {
+    public ScheduledProducerConsumerQueue(
+            final Construct scope,
+            final String id,
+            Schedule schedule,
+            ILambda producer,
+            ILambda consumer,
+            QueueConfig queueConfig) {
         this(scope, id, List.of(schedule), producer, consumer, queueConfig);
     }
 
-    public ScheduledProducerConsumerQueue(final Construct scope,
-                                          final String id,
-                                          List<Schedule> schedules,
-                                          ILambda producer,
-                                          ILambda consumer,
-                                          QueueConfig queueConfig) {
+    public ScheduledProducerConsumerQueue(
+            final Construct scope,
+            final String id,
+            List<Schedule> schedules,
+            ILambda producer,
+            ILambda consumer,
+            QueueConfig queueConfig) {
         super(scope, id);
 
-        this.producer = new ScheduledLambda(this,
-                                       "Producer",
-                                       producer,
-                                       schedules);
-        consumerQueue = new ConsumerQueue(this,
-                                          "ConsumerQueue",
-                                          consumer,
-                                          queueConfig);
+        this.producer = new ScheduledLambda(this, "Producer", producer, schedules);
+        consumerQueue = new ConsumerQueue(this, "ConsumerQueue", consumer, queueConfig);
         consumerQueue.getQueue().grantSendMessages(this.producer.getLambda().getAlias());
-        this.producer.getLambda()
+        this.producer
+                .getLambda()
                 .getFunction()
                 .addEnvironment("QUEUE_URL", consumerQueue.getQueue().getQueueUrl());
     }
-
 
     public ScheduledLambda getProducer() {
         return producer;
@@ -64,5 +59,4 @@ public class ScheduledProducerConsumerQueue extends Construct {
     public ConsumerQueue getConsumerQueue() {
         return consumerQueue;
     }
-
 }

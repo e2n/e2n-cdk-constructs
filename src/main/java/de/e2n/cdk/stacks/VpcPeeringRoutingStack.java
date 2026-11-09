@@ -10,10 +10,7 @@ public class VpcPeeringRoutingStack extends Stack {
     private final VpcPeeringRouting vpcPeeringRouting;
 
     public VpcPeeringRoutingStack(
-            Construct scope,
-            String id,
-            StackProps props,
-            VpcPeeringRouting.Props vpcPeeringRoutingProps) {
+            Construct scope, String id, StackProps props, VpcPeeringRouting.Props vpcPeeringRoutingProps) {
         super(scope, id, props);
 
         vpcPeeringRouting = new VpcPeeringRouting(this, "VpcPeeringRouting", vpcPeeringRoutingProps);
@@ -22,5 +19,4 @@ public class VpcPeeringRoutingStack extends Stack {
     public VpcPeeringRouting getVpcPeeringRouting() {
         return vpcPeeringRouting;
     }
-
 }

@@ -1,6 +1,10 @@
 package de.e2n.cdk.model;
 
 import de.e2n.cdk.constructs.Policy;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import software.amazon.awscdk.Duration;
 import software.amazon.awscdk.Size;
 import software.amazon.awscdk.services.ec2.ISecurityGroup;
@@ -11,11 +15,6 @@ import software.amazon.awscdk.services.iam.Role;
 import software.amazon.awscdk.services.lambda.Architecture;
 import software.amazon.awscdk.services.lambda.Code;
 import software.amazon.awscdk.services.lambda.Runtime;
-
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Die Konfiguration einer AWS Lambda-Function. Wird per {@link Builder} initialisiert.
@@ -40,22 +39,23 @@ public class DefaultLambdaConfig {
     private final SubnetSelection subnetSelection;
     private final List<ISecurityGroup> securityGroups;
 
-    public DefaultLambdaConfig(String name,
-                               String handlerPath,
-                               Code lambdaCode,
-                               Runtime runtime,
-                               Map<String,PolicyDocument> inlinePolicies,
-                               Duration timeout,
-                               int memorySize,
-                               Size ephemeralStorageSize,
-                               Number reservedConcurrentExecutions,
-                               Architecture architecture,
-                               Map<String, String> environment,
-                               String alias,
-                               Role role,
-                               IVpc vpc,
-                               SubnetSelection subnetSelection,
-                               List<ISecurityGroup> securityGroups) {
+    public DefaultLambdaConfig(
+            String name,
+            String handlerPath,
+            Code lambdaCode,
+            Runtime runtime,
+            Map<String, PolicyDocument> inlinePolicies,
+            Duration timeout,
+            int memorySize,
+            Size ephemeralStorageSize,
+            Number reservedConcurrentExecutions,
+            Architecture architecture,
+            Map<String, String> environment,
+            String alias,
+            Role role,
+            IVpc vpc,
+            SubnetSelection subnetSelection,
+            List<ISecurityGroup> securityGroups) {
         this.name = name;
         this.handlerPath = handlerPath;
         this.lambdaCode = lambdaCode;
@@ -90,7 +90,7 @@ public class DefaultLambdaConfig {
         return runtime;
     }
 
-    public Map<String,PolicyDocument> getInlinePolicies() {
+    public Map<String, PolicyDocument> getInlinePolicies() {
         return inlinePolicies;
     }
 
@@ -344,13 +344,12 @@ public class DefaultLambdaConfig {
             if (value == null) {
                 throw new IllegalArgumentException("Environment variable value must not be null");
             }
-            if( this.environment == null) {
+            if (this.environment == null) {
                 this.environment = new HashMap<>();
             }
             this.environment.put(key, value);
             return this;
         }
-
 
         public Builder alias(String alias) {
             this.alias = alias;
@@ -398,9 +397,7 @@ public class DefaultLambdaConfig {
                     role,
                     vpc,
                     subnetSelection,
-                    securityGroups
-            );
+                    securityGroups);
         }
-
     }
 }

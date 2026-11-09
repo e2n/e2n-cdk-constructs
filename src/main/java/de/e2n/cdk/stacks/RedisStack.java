@@ -1,5 +1,8 @@
 package de.e2n.cdk.stacks;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import software.amazon.awscdk.Fn;
 import software.amazon.awscdk.SecretValue;
 import software.amazon.awscdk.Stack;
@@ -17,10 +20,6 @@ import software.amazon.awscdk.services.secretsmanager.Secret;
 import software.amazon.awscdk.services.secretsmanager.SecretProps;
 import software.constructs.Construct;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 public class RedisStack extends Stack {
 
     private static final int REDIS_DEFAULT_PORT = 6379;
@@ -29,17 +28,12 @@ public class RedisStack extends Stack {
     private final SecurityGroup clusterSecurityGroup;
     private final Connections connections;
 
-    public RedisStack(Construct scope,
-                      String id,
-                      StackProps props,
-                      IVpc vpc,
-                      String cacheNodeType,
-                      IKey secretsManagerKey) {
+    public RedisStack(
+            Construct scope, String id, StackProps props, IVpc vpc, String cacheNodeType, IKey secretsManagerKey) {
         super(scope, id, props);
 
-        var subnetIds = vpc.getPrivateSubnets().stream()
-                .map(ISubnet::getSubnetId)
-                .collect(Collectors.toList());
+        var subnetIds =
+                vpc.getPrivateSubnets().stream().map(ISubnet::getSubnetId).collect(Collectors.toList());
         var cacheSubnetGroup = CfnSubnetGroup.Builder.create(this, "SubnetGroup")
                 .description("RedisStack SubnetGroup")
                 .subnetIds(subnetIds)
@@ -55,8 +49,7 @@ public class RedisStack extends Stack {
                 .securityGroups(List.of(clusterSecurityGroup))
                 .build();
 
-        CfnParameterGroup cfnParameterGroup = CfnParameterGroup.Builder
-                .create(this, "CfnParameterGroup")
+        CfnParameterGroup cfnParameterGroup = CfnParameterGroup.Builder.create(this, "CfnParameterGroup")
                 .cacheParameterGroupFamily("redis7")
                 .description("ParameterGroup - per CDK erzeugt")
                 .build();
@@ -95,5 +88,4 @@ public class RedisStack extends Stack {
     public Connections getConnections() {
         return connections;
     }
-
 }
