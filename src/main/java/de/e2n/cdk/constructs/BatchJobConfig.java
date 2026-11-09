@@ -102,7 +102,7 @@ public class BatchJobConfig {
 
         /**
          * The list of arguments for the command to run in the job container,
-         * e.g. {@code List.of("java", "-jar", "~/gastroapp-sk-office-export-1.0.jar")}.
+         * e.g. {@code List.of("java", "-jar", "~/foobar-1.0.jar")}.
          * @param jobCommand The list of arguments for the job command.
          * @return {@link BatchJobConfig.Builder}
          */
